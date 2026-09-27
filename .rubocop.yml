@@ -1,0 +1,19 @@
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 3.3
+
+Style/Documentation:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 100
+
+# Bundler-style hyphenated gem entrypoint
+Naming/FileName:
+  Exclude:
+    - lib/jekyll-icon-flow.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
