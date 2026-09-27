@@ -16,6 +16,9 @@ module Jekyll
     class IconTag < Liquid::Tag
       NAME_TOKEN = /\A\s*("[^"]*"|'[^']*'|[^\s]+)/
       PARAM = /(\w+):\s*("[^"]*"|'[^']*'|[^\s]+)/
+      # A bare token that starts with a letter/underscore and contains a
+      # dot or bracket is a variable path (include.pack, page.icon[0]).
+      VAR_PATH = /\A[A-Za-z_]\S*[.\[]/
 
       def self.for(pack_key)
         Class.new(self) do
@@ -23,14 +26,18 @@ module Jekyll
         end
       end
 
+      # The name check lives in render, not initialize: Liquid still parses
+      # tags inside {% comment %} blocks, so a documented example like
+      # "{% icon %}" must parse cleanly even though it never renders.
       def initialize(tag_name, markup, options)
         super
         @name_token = markup[NAME_TOKEN, 1]
         @params_markup = markup[NAME_TOKEN] ? markup.delete_prefix(markup[NAME_TOKEN]) : ""
-        raise Error, "icon tag requires a name" unless @name_token
       end
 
       def render(context)
+        raise Error, "icon tag requires a name" unless @name_token
+
         site = context.registers[:site]
         return "" if site&.config&.dig("icon_flow", "enabled") == false
 
@@ -42,17 +49,24 @@ module Jekyll
       private
 
       def parse_params(context)
-        @params_markup.scan(PARAM).to_h do |key, value|
-          [key, resolve(value, context)]
+        @params_markup.scan(PARAM).each_with_object({}) do |(key, value), params|
+          resolved = resolve(value, context, allow_nil: true)
+          params[key] = resolved unless resolved.nil?
         end
       end
 
       # Quoted tokens are literals; bare tokens resolve through the Liquid
       # context first (so include.name works) and fall back to the literal.
-      def resolve(token, context)
+      # Unresolved variable paths in params are treated as absent so a
+      # wrapper include can forward optional params unconditionally —
+      # literal values (icon names, "1.5em") never match VAR_PATH.
+      def resolve(token, context, allow_nil: false)
         return token[1..-2] if token.start_with?('"', "'")
 
-        context[token] || token
+        value = context[token]
+        return nil if allow_nil && value.nil? && token.match?(VAR_PATH)
+
+        value || token
       end
 
       def adapter_for(site, params)
