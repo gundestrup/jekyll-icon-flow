@@ -3,7 +3,10 @@
 $LOAD_PATH.unshift File.expand_path("../lib", __dir__)
 
 require "jekyll-icon-flow"
+require "jekyll_test_harness"
 require "liquid"
+
+JekyllTestHarness.install!(framework: :rspec)
 
 RSpec.configure do |config|
   config.disable_monkey_patching!
