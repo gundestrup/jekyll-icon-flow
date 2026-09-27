@@ -38,6 +38,21 @@ RSpec.describe "site build integration" do
     end
   end
 
+  it "fails a real build for a missing icon in strict mode" do
+    files = jekyll_files do
+      file "index.md" do
+        frontmatter("title" => "Home")
+        contents "{% icon no-such-icon-xyz %}"
+      end
+    end
+
+    expect do
+      jekyll_build(config: { "icon_flow" => { "on_missing" => "strict" } }, files: files) do |_site|
+        nil
+      end
+    end.to raise_error(JekyllTestHarness::SiteBuildError, /not found/)
+  end
+
   it "survives a missing icon in warn mode without failing the build" do
     files = jekyll_files do
       file "_layouts/default.html" do

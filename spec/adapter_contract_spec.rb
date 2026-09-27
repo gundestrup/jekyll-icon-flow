@@ -12,6 +12,15 @@ CONTRACT_ICONS = {
 }.freeze
 
 RSpec.describe "adapter output contract" do
+  it "recolors hard-coded colors on child elements without changing fill=none" do
+    adapter = Jekyll::IconFlow::Adapters::Custom.new
+    svg = '<svg viewBox="0 0 1 1"><path fill="#ff0000" stroke="blue" d="M0 0"/>' \
+          '<path fill="none" stroke="url(#gradient)" d="M1 1"/></svg>'
+    html = adapter.send(:normalize, svg, "star", {})
+    expect(html).to include('<path fill="currentColor" stroke="currentColor"')
+    expect(html).to include('fill="none" stroke="url(#gradient)"')
+  end
+
   Jekyll::IconFlow::ADAPTERS.each_key do |pack|
     describe pack do
       let(:site) { make_site("icon_flow" => { "custom_dir" => "custom_icons" }) }

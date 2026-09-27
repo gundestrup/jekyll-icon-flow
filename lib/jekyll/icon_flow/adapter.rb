@@ -17,6 +17,7 @@ module Jekyll
       COLOR_MODEL = :auto
 
       ICON_NAME = /\A[a-z0-9_-]+\z/
+      CSS_SIZE = /\A(?:0|(?:\d+(?:\.\d+)?|\.\d+)(?:px|em|rem|%|vw|vh|vmin|vmax|ch|ex))\z/i
 
       def initialize(site = nil)
         @site = site
@@ -56,18 +57,33 @@ module Jekyll
 
       def normalize(svg, icon_name, options)
         svg = svg.strip.sub(/\A<\?xml[^?]*\?>\s*/, "")
+        svg = normalize_custom_colors(svg) if self.class::COLOR_MODEL == :auto
         svg = svg.sub(/<svg[^>]*>/) { |tag| normalize_root(tag, icon_name, options) }
-        options["title"] ? inject_title(svg, options["title"]) : svg
+        options["title"] ? inject_title(svg, options["title"].to_s) : svg
       end
 
       def normalize_root(tag, icon_name, options)
-        size = options["size"] || "1em"
+        size = (options["size"] || "1em").to_s
+        raise Error, "invalid icon size '#{size}'" unless size.match?(CSS_SIZE)
+
         tag = tag.gsub(/\s+(width|height)="[^"]*"/, "")
-        tag = ensure_attr(tag, "class", "icon icon-#{icon_name} #{options['class']}".strip)
+        classes = "icon icon-#{icon_name} #{options['class']}".strip
+        tag = ensure_attr(tag, "class", CGI.escapeHTML(classes))
         tag = merge_style(tag, "width:#{size};height:#{size}")
         tag = normalize_color(tag)
         tag = ensure_attr(tag, "data-icon-pack", pack_name)
         ensure_attr(tag, "role", "img")
+      end
+
+      def normalize_custom_colors(svg)
+        svg.gsub(/(\s)(fill|stroke)=(['"])(.*?)\3/) do
+          space, name, quote, value = Regexp.last_match.captures
+          %(#{space}#{name}=#{quote}#{preserve_color?(value) ? value : 'currentColor'}#{quote})
+        end
+      end
+
+      def preserve_color?(value)
+        value == "none" || value == "currentColor" || value.start_with?("url(")
       end
 
       def inject_title(svg, title)

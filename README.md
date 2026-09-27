@@ -1,5 +1,10 @@
 # jekyll-icon-flow
 
+[![CI](https://github.com/gundestrup/jekyll-icon-flow/actions/workflows/ci.yml/badge.svg)](https://github.com/gundestrup/jekyll-icon-flow/actions/workflows/ci.yml)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gundestrup/jekyll-icon-flow)
+[![Codecov](https://codecov.io/gh/gundestrup/jekyll-icon-flow/graph/badge.svg)](https://codecov.io/gh/gundestrup/jekyll-icon-flow)
+[![SonarCloud: setup pending](https://img.shields.io/badge/SonarCloud-setup%20pending-orange)](https://sonarcloud.io/dashboard?id=gundestrup_jekyll-icon-flow)
+
 Pack-agnostic inline SVG icons for Jekyll via Liquid tags. Each icon pack
 is an adapter that resolves names to SVG sources and normalizes the output —
 so switching packs changes the icon, not your styling.
@@ -41,7 +46,7 @@ coexist. Swap `icon_lucide` for `icon_simple` and the icon changes while
 
 | Param | Default | Effect |
 |---|---|---|
-| `size:` | `1em` | CSS size applied as inline `width`/`height` |
+| `size:` | `1em` | Nonnegative CSS length (`px`, `em`, `rem`, `%`, `vw`, `vh`, `vmin`, `vmax`, `ch`, `ex`) or `0`, applied to `width`/`height` |
 | `class:` | — | merged onto the `<svg>` alongside `icon icon-<name>` |
 | `title:` | — | accessible label, rendered as `<title>` in the SVG |
 | `pack:` | config | only on `{% icon %}` — pick a pack explicitly |
@@ -98,7 +103,9 @@ Every icon renders normalized SVG:
 
 - `width`/`height` attributes are stripped; size comes from inline style
 - `stroke`/`fill` normalized to `currentColor` per the pack's color model
-  (`:stroke`, `:fill`, or `:auto`) so `color:` CSS works identically
+  (`:stroke`, `:fill`, or `:auto`); custom SVG attributes on child elements
+  are recolored except `none` and `url(...)` references. Inline CSS styles
+  and embedded stylesheets in custom SVGs are site-owned and are not rewritten
 - `icon icon-<name>` classes + `data-icon-pack` give stable CSS hooks
   that survive a pack switch
 - missing/invalid icons warn via `Jekyll.logger` and render `""`
@@ -110,6 +117,19 @@ Every icon renders normalized SVG:
    (`pack_name`, `path_for`, `icons_dir`, `COLOR_MODEL`).
 2. Register it in `IconFlow::ADAPTERS` in `lib/jekyll/icon_flow.rb`.
 3. `{% icon_<pack> %}` and `{% <pack>_icon %}` are registered automatically.
+
+## Development and release checks
+
+Run `bundle exec rake ci` for RuboCop, dependency audit, local Semgrep rules,
+RSpec with SimpleCov and packaged-gem contents. Coverage is written to
+`coverage/index.html` locally and `coverage/coverage.xml` in CI for Codecov.
+`COVERAGE=false bundle exec rspec` skips instrumentation during focused work.
+Run `bundle exec rake "version:bump[patch]"` to update the gem version and
+lockfile, then add a dated changelog entry before
+`bundle exec rake version:pre_release`. Publishing requires configuring the
+GitHub `release` environment and RubyGems trusted publishing first.
+The SonarCloud badge remains pending until the repository is onboarded; its
+vendored icons are excluded in `.sonarcloud.properties`.
 
 ## License
 

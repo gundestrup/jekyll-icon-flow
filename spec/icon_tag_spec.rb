@@ -72,4 +72,21 @@ RSpec.describe Jekyll::IconFlow::IconTag do
     expect(html).to include('data-icon-pack="custom"')
     expect(html).to include("icon-star")
   end
+
+  it "escapes styling supplied through Liquid variables" do
+    html = render_tag("icon_lucide search class: page.css title: page.label",
+                      vars: { "page" => { "css" => 'x" onmouseover="alert(1)',
+                                          "label" => '<img src=x onerror="alert(1)">' } })
+    expect(html).to include("x&quot; onmouseover=&quot;alert(1)")
+    expect(html).not_to include(' onmouseover="alert(1)"')
+    expect(html).to include("&lt;img src=x onerror=&quot;alert(1)&quot;&gt;")
+  end
+
+  it "rejects unsafe CSS sizes in strict mode" do
+    site = make_site("icon_flow" => { "on_missing" => "strict" })
+    vars = { "page" => { "size" => '1em" onload="alert(1)' } }
+    expect do
+      render_tag!("icon_lucide search size: page.size", site: site, vars: vars)
+    end.to raise_error(Jekyll::IconFlow::Error, /size/)
+  end
 end

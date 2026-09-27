@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "strscan"
+
 module Jekyll
   module IconFlow
     # {% icon %} and per-pack {% icon_<pack> %} tags.
@@ -18,7 +20,6 @@ module Jekyll
     # also accepts pack: to pick an adapter explicitly; bound tags ignore it.
     class IconTag < Liquid::Tag
       NAME_TOKEN = /\A\s*("[^"]*"|'[^']*'|[^\s]+)/
-      PARAM = /(\w+):\s*("[^"]*"|'[^']*'|[^\s]+)/
       # A bare token that starts with a letter/underscore and contains a
       # dot or bracket is a variable path (include.pack, page.icon[0]).
       VAR_PATH = /\A[A-Za-z_]\S*[.\[]/
@@ -67,10 +68,28 @@ module Jekyll
       end
 
       def parse_params(context)
-        @params_markup.scan(PARAM).each_with_object({}) do |(key, value), params|
+        scanner = StringScanner.new(@params_markup)
+        params = {}
+        until scanner.eos?
+          key, value = next_param(scanner)
+          next unless key && value
+
           resolved = resolve(value, context, allow_nil: true)
-          params[key] = resolved unless resolved.nil?
+          params[key.delete_suffix(":")] = resolved unless resolved.nil?
         end
+        params
+      end
+
+      def next_param(scanner)
+        scanner.skip(/\s+/)
+        key = scanner.scan(/\w+:/)
+        unless key
+          scanner.pos += 1 unless scanner.eos?
+          return nil
+        end
+
+        scanner.skip(/\s*/)
+        [key, scanner.scan(/"[^"]*"|'[^']*'|\S+/)]
       end
 
       # Quoted tokens are literals; bare tokens resolve through the Liquid
