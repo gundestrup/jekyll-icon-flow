@@ -32,6 +32,23 @@ RSpec.describe Jekyll::IconFlow::IconTag do
     expect(html).to include("has-text-link")
   end
 
+  it "resolves named sizes to relative em values" do
+    { "xs" => "0.75em", "l" => "1.25em", "xxl" => "2em" }.each do |name, em|
+      expect(render_tag("icon_lucide search size:#{name}")).to include("width:#{em};height:#{em}")
+    end
+  end
+
+  it "defaults to size m (1em) when no size is given" do
+    expect(render_tag("icon_lucide search")).to include("width:1em;height:1em")
+    expect(render_tag("icon_lucide search size:m")).to include("width:1em;height:1em")
+  end
+
+  it "rejects unknown size names in strict mode" do
+    site = make_site("icon_flow" => { "on_missing" => "strict" })
+    expect { render_tag!("icon_lucide search size:huge", site: site) }
+      .to raise_error(Jekyll::IconFlow::Error, /size/)
+  end
+
   it "resolves context variables for name and pack" do
     html = render_tag("icon include.name pack: include.pack",
                       vars: { "include" => { "name" => "map-pin", "pack" => "lucide" } })

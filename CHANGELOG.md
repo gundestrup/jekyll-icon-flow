@@ -8,7 +8,8 @@
 - `{% icon_ref <key> %}` — semantic names resolved through
   `icon_flow.registry` (`pack:name[:class]` entries)
 - Normalized output contract: `icon icon-<name>` classes, `currentColor`,
-  inline `1em` sizing, `data-icon-pack` hook
+  `data-icon-pack` hook, inline em-based sizing with a named scale
+  (`xxs`–`xxl`, default `m` = 1em line-height) or a literal CSS size
 - `icon_flow.on_missing: warn|strict` — warn + empty render by default
 - Escape Liquid-supplied SVG attributes, validate icon sizes, and normalize child SVG colors.
 - RSpec integration/adapter contracts, coverage reporting, Semgrep and gem-artifact checks.

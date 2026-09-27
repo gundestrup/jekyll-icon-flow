@@ -46,7 +46,7 @@ coexist. Swap `icon_lucide` for `icon_simple` and the icon changes while
 
 | Param | Default | Effect |
 |---|---|---|
-| `size:` | `1em` | Nonnegative CSS length (`px`, `em`, `rem`, `%`, `vw`, `vh`, `vmin`, `vmax`, `ch`, `ex`) or `0`, applied to `width`/`height` |
+| `size:` | `m` (`1em`) | Named size `xxs`/`xs`/`s`/`m`/`l`/`xl`/`xxl` (0.5/0.75/0.875/1/1.25/1.5/2 em — relative, so icons scale with surrounding text; default `m` = 1em fits the line height) or a nonnegative CSS length (`px`, `em`, `rem`, `%`, `vw`, `vh`, `vmin`, `vmax`, `ch`, `ex`) or `0`, applied to `width`/`height` |
 | `class:` | — | merged onto the `<svg>` alongside `icon icon-<name>` |
 | `title:` | — | accessible label, rendered as `<title>` in the SVG |
 | `pack:` | config | only on `{% icon %}` — pick a pack explicitly |

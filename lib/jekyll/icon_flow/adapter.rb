@@ -8,8 +8,9 @@ module Jekyll
     # normalizes the markup so every pack shares the same styling contract:
     #
     #   * class "icon icon-<name>" merged into the root element
-    #   * fixed width/height attributes removed; size via inline style
-    #     (default 1em) so the icon scales with surrounding text
+    #   * fixed width/height attributes removed; size via inline style —
+    #     named sizes (xxs..xxl, see SIZES) or a literal CSS size; the
+    #     default `m` = 1em fits the surrounding line height
     #   * color normalized to currentColor according to the pack's
     #     COLOR_MODEL (:stroke, :fill, or :auto for arbitrary SVGs)
     #   * data-icon-pack="<pack>" and role="img" on the root element
@@ -18,6 +19,19 @@ module Jekyll
 
       ICON_NAME = /\A[a-z0-9_-]+\z/
       CSS_SIZE = /\A(?:0|(?:\d+(?:\.\d+)?|\.\d+)(?:px|em|rem|%|vw|vh|vmin|vmax|ch|ex))\z/i
+
+      # Named sizes — relative (em) so every step scales with the
+      # surrounding text/container; `m` (1em) fits the line height and
+      # is the default. A literal CSS size still works via size:.
+      SIZES = {
+        "xxs" => "0.5em",
+        "xs" => "0.75em",
+        "s" => "0.875em",
+        "m" => "1em",
+        "l" => "1.25em",
+        "xl" => "1.5em",
+        "xxl" => "2em"
+      }.freeze
 
       def initialize(site = nil)
         @site = site
@@ -63,12 +77,9 @@ module Jekyll
       end
 
       def normalize_root(tag, icon_name, options)
-        size = (options["size"] || "1em").to_s
-        raise Error, "invalid icon size '#{size}'" unless size.match?(CSS_SIZE)
-
+        size = icon_size(options)
         tag = tag.gsub(/\s+(width|height)="[^"]*"/, "")
-        classes = "icon icon-#{icon_name} #{options['class']}".strip
-        tag = ensure_attr(tag, "class", CGI.escapeHTML(classes))
+        tag = ensure_attr(tag, "class", icon_classes(icon_name, options))
         tag = merge_style(tag, "width:#{size};height:#{size}")
         tag = normalize_color(tag)
         tag = ensure_attr(tag, "data-icon-pack", pack_name)
@@ -99,6 +110,18 @@ module Jekyll
         when :fill then ensure_attr(tag, "fill", "currentColor")
         else tag =~ /\s(fill|stroke)=/ ? tag : tag.sub("<svg", '<svg fill="currentColor"')
         end
+      end
+
+      def icon_classes(icon_name, options)
+        CGI.escapeHTML("icon icon-#{icon_name} #{options['class']}".strip)
+      end
+
+      def icon_size(options)
+        raw = (options["size"] || "m").to_s.strip
+        size = SIZES.fetch(raw.downcase, raw)
+        raise Error, "invalid icon size '#{options['size']}'" unless size.match?(CSS_SIZE)
+
+        size
       end
 
       def ensure_attr(tag, attr, value)
