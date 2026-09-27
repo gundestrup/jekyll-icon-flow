@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'cgi'
+require "cgi"
 
 module Jekyll
   module IconFlow
@@ -35,7 +35,7 @@ module Jekyll
       def icon_names
         return [] unless Dir.exist?(icons_dir)
 
-        Dir.children(icons_dir).grep(/\.svg\z/).map { |f| f.delete_suffix('.svg') }.sort
+        Dir.children(icons_dir).grep(/\.svg\z/).map { |f| f.delete_suffix(".svg") }.sort
       end
 
       def render(icon_name, options = {})
@@ -55,20 +55,23 @@ module Jekyll
       end
 
       def normalize(svg, icon_name, options)
-        svg = svg.strip.sub(/\A<\?xml[^?]*\?>\s*/, '')
-        svg.sub!(/<svg[^>]*>/) do |tag|
-          tag = tag.gsub(/\s+(width|height)="[^"]*"/, '')
-          tag = ensure_attr(tag, 'class', "icon icon-#{icon_name} #{options['class']}".strip)
-          tag = merge_style(tag,
-                            "width:#{options['size'] || '1em'};height:#{options['size'] || '1em'}")
-          tag = normalize_color(tag)
-          tag = ensure_attr(tag, 'data-icon-pack', pack_name)
-          ensure_attr(tag, 'role', 'img')
-        end
-        if (title = options['title'])
-          svg.sub!(/<svg[^>]*>/) { |tag| "#{tag}<title>#{CGI.escapeHTML(title)}</title>" }
-        end
-        svg
+        svg = svg.strip.sub(/\A<\?xml[^?]*\?>\s*/, "")
+        svg = svg.sub(/<svg[^>]*>/) { |tag| normalize_root(tag, icon_name, options) }
+        options["title"] ? inject_title(svg, options["title"]) : svg
+      end
+
+      def normalize_root(tag, icon_name, options)
+        size = options["size"] || "1em"
+        tag = tag.gsub(/\s+(width|height)="[^"]*"/, "")
+        tag = ensure_attr(tag, "class", "icon icon-#{icon_name} #{options['class']}".strip)
+        tag = merge_style(tag, "width:#{size};height:#{size}")
+        tag = normalize_color(tag)
+        tag = ensure_attr(tag, "data-icon-pack", pack_name)
+        ensure_attr(tag, "role", "img")
+      end
+
+      def inject_title(svg, title)
+        svg.sub(/<svg[^>]*>/) { |tag| "#{tag}<title>#{CGI.escapeHTML(title)}</title>" }
       end
 
       # :stroke packs (lucide) already carry stroke="currentColor";
@@ -76,17 +79,17 @@ module Jekyll
       # :auto (custom) only injects fill when the SVG declares neither.
       def normalize_color(tag)
         case self.class::COLOR_MODEL
-        when :stroke then ensure_attr(tag, 'stroke', 'currentColor')
-        when :fill then ensure_attr(tag, 'fill', 'currentColor')
-        else tag =~ /\s(fill|stroke)=/ ? tag : tag.sub('<svg', '<svg fill="currentColor"')
+        when :stroke then ensure_attr(tag, "stroke", "currentColor")
+        when :fill then ensure_attr(tag, "fill", "currentColor")
+        else tag =~ /\s(fill|stroke)=/ ? tag : tag.sub("<svg", '<svg fill="currentColor"')
         end
       end
 
       def ensure_attr(tag, attr, value)
         if tag =~ /\s#{attr}="([^"]*)"/
-          attr == 'class' ? tag.sub(/class="([^"]*)"/, %(class="\\1 #{value}")) : tag
+          attr == "class" ? tag.sub(/class="([^"]*)"/, %(class="\\1 #{value}")) : tag
         else
-          tag.sub('<svg', %(<svg #{attr}="#{value}"))
+          tag.sub("<svg", %(<svg #{attr}="#{value}"))
         end
       end
 
@@ -94,7 +97,7 @@ module Jekyll
         if tag =~ /\sstyle="([^"]*)"/
           tag.sub(/style="([^"]*)"/, %(style="\\1;#{style}"))
         else
-          tag.sub('<svg', %(<svg style="#{style}"))
+          tag.sub("<svg", %(<svg style="#{style}"))
         end
       end
     end

@@ -11,7 +11,7 @@ module Jekyll
         COLOR_MODEL = :auto
 
         def pack_name
-          'custom'
+          "custom"
         end
 
         def path_for(icon_name)
@@ -22,7 +22,7 @@ module Jekyll
         private
 
         def icons_dir
-          dir = @site&.config&.dig('icon_flow', 'custom_dir') || 'assets/icons/custom'
+          dir = @site&.config&.dig("icon_flow", "custom_dir") || "assets/icons/custom"
           File.expand_path(dir, @site&.source || Dir.pwd)
         end
       end

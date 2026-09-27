@@ -9,7 +9,7 @@ module Jekyll
         COLOR_MODEL = :fill
 
         def pack_name
-          'simple'
+          "simple"
         end
 
         def path_for(icon_name)
@@ -20,7 +20,7 @@ module Jekyll
         private
 
         def icons_dir
-          File.expand_path('../../../../assets/icons/simple', __dir__)
+          File.expand_path("../../../../assets/icons/simple", __dir__)
         end
       end
     end

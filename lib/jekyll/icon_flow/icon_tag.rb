@@ -26,13 +26,13 @@ module Jekyll
       def initialize(tag_name, markup, options)
         super
         @name_token = markup[NAME_TOKEN, 1]
-        @params_markup = markup[NAME_TOKEN] ? markup.delete_prefix(markup[NAME_TOKEN]) : ''
-        raise Error, 'icon tag requires a name' unless @name_token
+        @params_markup = markup[NAME_TOKEN] ? markup.delete_prefix(markup[NAME_TOKEN]) : ""
+        raise Error, "icon tag requires a name" unless @name_token
       end
 
       def render(context)
         site = context.registers[:site]
-        return '' if site&.config&.dig('icon_flow', 'enabled') == false
+        return "" if site&.config&.dig("icon_flow", "enabled") == false
 
         name = resolve(@name_token, context)
         params = parse_params(context)
@@ -56,8 +56,8 @@ module Jekyll
       end
 
       def adapter_for(site, params)
-        key = bound_pack || params.delete('pack') ||
-              site&.config&.dig('icon_flow', 'pack') || 'lucide'
+        key = bound_pack || params.delete("pack") ||
+              site&.config&.dig("icon_flow", "pack") || "lucide"
         klass = ADAPTERS[key]
         raise Error, "unknown icon pack '#{key}'" unless klass
 
