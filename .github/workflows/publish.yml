@@ -28,7 +28,8 @@ jobs:
           bundler-cache: true
 
       - name: Install Semgrep
-        run: pip3 install --only-binary :all: "semgrep==1.176.0"
+        run: |
+          pip3 install --only-binary :all: "semgrep==1.176.0"
 
       - name: Verify version and run release checks
         run: |

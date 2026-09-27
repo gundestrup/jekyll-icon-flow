@@ -29,7 +29,8 @@ jobs:
           bundler-cache: true
 
       - name: Install Semgrep
-        run: pip3 install --only-binary :all: "semgrep==1.176.0"
+        run: |
+          pip3 install --only-binary :all: "semgrep==1.176.0"
 
       - name: Audit Ruby dependencies
         run: bundle exec bundle-audit check --update
