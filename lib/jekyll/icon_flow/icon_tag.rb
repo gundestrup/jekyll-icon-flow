@@ -5,10 +5,13 @@ module Jekyll
     # {% icon %} and per-pack {% icon_<pack> %} tags.
     #
     #   {% icon search %}                              default pack (icon_flow.pack)
-    #   {% icon include.name pack: include.pack %}     variables resolve from context
+    #   {% icon include.name pack: include["pack"] %}  variables resolve from context
     #   {% icon_lucide "file-text" size:1.5em class:"has-text-link" %}
     #   {% icon_simple github %}
     #   {% icon_custom logo %}
+    #
+    # Aliases matching the fleet convention (jekyll-lucide): lucide_icon,
+    # simple_icon, custom_icon.
     #
     # Params: size (any CSS size, default 1em), class (merged onto the svg),
     # title (accessible label, becomes an svg <title>). The generic {% icon %}
@@ -36,17 +39,32 @@ module Jekyll
       end
 
       def render(context)
-        raise Error, "icon tag requires a name" unless @name_token
-
         site = context.registers[:site]
         return "" if site&.config&.dig("icon_flow", "enabled") == false
 
-        name = resolve(@name_token, context)
-        params = parse_params(context)
+        name, params = name_and_params(context)
         adapter_for(site, params).render(name, params)
+      rescue Error => e
+        missing!(site, e)
       end
 
       private
+
+      def name_and_params(context)
+        raise Error, "icon tag requires a name" unless @name_token
+
+        [resolve(@name_token, context), parse_params(context)]
+      end
+
+      # Missing icons are untrusted user input — report via the host logger
+      # and render empty by default (icon_flow.on_missing: warn). Set
+      # on_missing: strict to fail the build instead.
+      def missing!(site, error)
+        raise error if site&.config&.dig("icon_flow", "on_missing") == "strict"
+
+        Jekyll.logger.warn("icon_flow:", error.message)
+        ""
+      end
 
       def parse_params(context)
         @params_markup.scan(PARAM).each_with_object({}) do |(key, value), params|
@@ -72,10 +90,11 @@ module Jekyll
       def adapter_for(site, params)
         key = bound_pack || params.delete("pack") ||
               site&.config&.dig("icon_flow", "pack") || "lucide"
-        klass = ADAPTERS[key]
-        raise Error, "unknown icon pack '#{key}'" unless klass
+        adapter_class(site, key).new(site)
+      end
 
-        klass.new(site)
+      def adapter_class(_site, key)
+        ADAPTERS[key] || raise(Error, "unknown icon pack '#{key}'")
       end
 
       def bound_pack

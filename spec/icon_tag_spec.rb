@@ -20,10 +20,16 @@ RSpec.describe Jekyll::IconFlow::IconTag do
     expect(html).to include("icon icon-github")
   end
 
+  it "supports the fleet-convention alias {% lucide_icon %}" do
+    html = render_tag('lucide_icon "map-pin"')
+    expect(html).to include("icon-map-pin")
+    expect(html).to include('data-icon-pack="lucide"')
+  end
+
   it "keeps styling params identical across packs" do
-    lucide = render_tag('icon_lucide "file-text" size:1.5em class:"has-text-link"')
-    expect(lucide).to include('style="width:1.5em;height:1.5em"')
-    expect(lucide).to include("has-text-link")
+    html = render_tag('icon_lucide "file-text" size:1.5em class:"has-text-link"')
+    expect(html).to include('style="width:1.5em;height:1.5em"')
+    expect(html).to include("has-text-link")
   end
 
   it "resolves context variables for name and pack" do
@@ -32,25 +38,36 @@ RSpec.describe Jekyll::IconFlow::IconTag do
     expect(html).to include("icon-map-pin")
   end
 
+  it "drops unresolved var-path params instead of passing literals" do
+    html = render_tag('icon search size: include["size"]', vars: { "include" => {} })
+    expect(html).to include('style="width:1em;height:1em"')
+  end
+
   it "uses icon_flow.pack as the default for {% icon %}" do
-    site = FakeSite.new({ "icon_flow" => { "pack" => "simple" } }, Dir.pwd)
+    site = make_site("icon_flow" => { "pack" => "simple" })
     html = render_tag("icon github", site: site)
     expect(html).to include('data-icon-pack="simple"')
   end
 
   it "renders nothing when icon_flow.enabled is false" do
-    site = FakeSite.new({ "icon_flow" => { "enabled" => false } }, Dir.pwd)
+    site = make_site("icon_flow" => { "enabled" => false })
     expect(render_tag("icon_lucide search", site: site)).to eq("")
   end
 
-  it "raises for an unknown icon name" do
-    expect { render_tag!("icon_lucide no-such-icon-xyz") }
+  it "warns and renders empty for an unknown icon (default)" do
+    site = make_site # build before stubbing — Jekyll::Site.new warns itself
+    expect(Jekyll.logger).to receive(:warn).with("icon_flow:", /not found/)
+    expect(render_tag("icon_lucide no-such-icon-xyz", site: site)).to eq("")
+  end
+
+  it "raises for an unknown icon when on_missing is strict" do
+    site = make_site("icon_flow" => { "on_missing" => "strict" })
+    expect { render_tag!("icon_lucide no-such-icon-xyz", site: site) }
       .to raise_error(Jekyll::IconFlow::Error, /not found/)
   end
 
   it "renders a custom pack icon from the site dir" do
-    site = FakeSite.new({ "icon_flow" => { "custom_dir" => "fixtures/custom_icons" } },
-                        File.expand_path(".", __dir__))
+    site = make_site("icon_flow" => { "custom_dir" => "custom_icons" })
     html = render_tag("icon_custom star", site: site)
     expect(html).to include('data-icon-pack="custom"')
     expect(html).to include("icon-star")

@@ -12,13 +12,21 @@ RSpec.configure do |config|
   end
 end
 
-# Minimal stand-in for a Jekyll site object — the tags only need
-# #config (Hash) and #source (String).
-FakeSite = Struct.new(:config, :source)
+# Real Jekyll::Site (host-object testing, not mocks). Source points at
+# spec/fixtures so the custom adapter can read fixture SVGs; destination
+# is a throwaway dir — nothing is ever built.
+def make_site(config = {})
+  Jekyll::Site.new(Jekyll.configuration(
+                     {
+                       "source" => File.expand_path("fixtures", __dir__),
+                       "destination" => File.expand_path("fixtures/_site", __dir__)
+                     }.merge(config)
+                   ))
+end
 
 def liquid_context(site: nil, vars: {})
   ctx = Liquid::Context.new(vars)
-  ctx.registers[:site] = site || FakeSite.new({}, Dir.pwd)
+  ctx.registers[:site] = site || make_site
   ctx
 end
 

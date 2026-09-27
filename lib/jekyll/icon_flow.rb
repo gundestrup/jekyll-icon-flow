@@ -10,6 +10,7 @@ require_relative "icon_flow/adapters/lucide"
 require_relative "icon_flow/adapters/simple"
 require_relative "icon_flow/adapters/custom"
 require_relative "icon_flow/icon_tag"
+require_relative "icon_flow/icon_ref_tag"
 
 module Jekyll
   module IconFlow
@@ -25,6 +26,10 @@ module Jekyll
 end
 
 Jekyll::IconFlow::ADAPTERS.each_key do |key|
-  Liquid::Template.register_tag("icon_#{key}", Jekyll::IconFlow::IconTag.for(key))
+  tag = Jekyll::IconFlow::IconTag.for(key)
+  Liquid::Template.register_tag("icon_#{key}", tag)
+  # Fleet-convention aliases (jekyll-lucide uses {% lucide_icon %})
+  Liquid::Template.register_tag("#{key}_icon", tag)
 end
 Liquid::Template.register_tag("icon", Jekyll::IconFlow::IconTag)
+Liquid::Template.register_tag("icon_ref", Jekyll::IconFlow::IconRefTag)
