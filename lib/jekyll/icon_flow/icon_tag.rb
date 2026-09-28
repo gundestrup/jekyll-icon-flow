@@ -44,7 +44,7 @@ module Jekyll
         return "" if site&.config&.dig("icon_flow", "enabled") == false
 
         name, params = name_and_params(context)
-        adapter_for(site, params).render(name, params)
+        render_icon(site, name, params)
       rescue Error => e
         missing!(site, e)
       end
@@ -106,14 +106,46 @@ module Jekyll
         value || token
       end
 
-      def adapter_for(site, params)
-        key = bound_pack || params.delete("pack") ||
-              site&.config&.dig("icon_flow", "pack") || "lucide"
-        adapter_class(site, key).new(site)
+      # The unbound {% icon %} tag searches packs in order and renders the
+      # first hit — custom_dir and named icon_flow.packs dirs, then the
+      # bundled packs (default chain: custom → simple → lucide, so a brand
+      # name like "github" just works). pack: or icon_flow.pack pin the
+      # lookup to a single pack; bound {% icon_<pack> %} tags always use
+      # their own pack only.
+      def render_icon(site, name, params)
+        keys = candidate_keys(site, params)
+        adapters = keys.map { |key| adapter_instance(site, key) }
+        hit = adapters.find { |adapter| adapter.path_for(name) }
+        return hit.render(name, params) if hit
+
+        plural = keys.size == 1 ? "pack" : "packs"
+        raise Error, "icon '#{name}' not found in #{plural} '#{keys.join(', ')}'"
       end
 
-      def adapter_class(_site, key)
-        ADAPTERS[key] || raise(Error, "unknown icon pack '#{key}'")
+      def candidate_keys(site, params)
+        return [bound_pack] if bound_pack
+        return [params.delete("pack").to_s] if params["pack"]
+
+        pack = site&.config&.dig("icon_flow", "pack")
+        pack ? [pack.to_s] : search_keys(site)
+      end
+
+      def search_keys(site)
+        search = site&.config&.dig("icon_flow", "search")
+        search = %w[custom simple lucide] if search.nil? || search.empty?
+        Array(search).map(&:to_s)
+      end
+
+      # Built-in packs instantiate their own class; any other name resolves
+      # through icon_flow.packs (name → site-relative dir of *.svg files).
+      def adapter_instance(site, key)
+        klass = ADAPTERS[key]
+        return klass.new(site) if klass
+
+        dir = site&.config&.dig("icon_flow", "packs", key)
+        return Adapters::Custom.new(site, pack_name: key, dir: dir) if dir
+
+        raise Error, "unknown icon pack '#{key}'"
       end
 
       def bound_pack

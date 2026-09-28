@@ -90,6 +90,56 @@ RSpec.describe Jekyll::IconFlow::IconTag do
     expect(html).to include("icon-star")
   end
 
+  it "searches all packs for {% icon %} (custom → simple → lucide)" do
+    site = make_site("icon_flow" => { "custom_dir" => "custom_icons" })
+    expect(render_tag("icon star", site: site)).to include('data-icon-pack="custom"')
+    expect(render_tag("icon github", site: site)).to include('data-icon-pack="simple"')
+    expect(render_tag("icon search", site: site)).to include('data-icon-pack="lucide"')
+  end
+
+  it "lets the search order resolve name collisions (rss: simple before lucide)" do
+    site = make_site
+    expect(render_tag("icon rss", site: site)).to include('data-icon-pack="simple"')
+    expect(render_tag("icon_lucide rss", site: site)).to include('data-icon-pack="lucide"')
+  end
+
+  it "honors icon_flow.search order" do
+    site = make_site("icon_flow" => { "search" => ["lucide"] })
+    expect(render_tag("icon search", site: site)).to include('data-icon-pack="lucide"')
+    expect(render_tag("icon github", site: site)).to eq("")
+  end
+
+  it "pins {% icon %} to icon_flow.pack when configured" do
+    site = make_site("icon_flow" => { "pack" => "lucide", "on_missing" => "strict" })
+    expect(render_tag("icon search", site: site)).to include('data-icon-pack="lucide"')
+    expect { render_tag!("icon github", site: site) }
+      .to raise_error(Jekyll::IconFlow::Error, /not found/)
+  end
+
+  it "renders a named pack directory from icon_flow.packs" do
+    site = make_site("icon_flow" => { "packs" => { "fa" => "fa_icons" } })
+    html = render_tag("icon flag pack:fa", site: site)
+    expect(html).to include('data-icon-pack="fa"')
+    expect(html).to include("icon-flag")
+  end
+
+  it "includes named packs in the {% icon %} search chain" do
+    site = make_site("icon_flow" => {
+                       "packs" => { "fa" => "fa_icons" },
+                       "search" => %w[fa lucide]
+                     })
+    expect(render_tag("icon flag", site: site)).to include('data-icon-pack="fa"')
+    expect(render_tag("icon github", site: site)).to eq("")
+  end
+
+  it "resolves named packs through {% icon_ref %}" do
+    site = make_site("icon_flow" => {
+                       "packs" => { "fa" => "fa_icons" },
+                       "registry" => { "banner" => "fa:flag" }
+                     })
+    expect(render_tag("icon_ref banner", site: site)).to include('data-icon-pack="fa"')
+  end
+
   it "escapes styling supplied through Liquid variables" do
     html = render_tag("icon_lucide search class: page.css title: page.label",
                       vars: { "page" => { "css" => 'x" onmouseover="alert(1)',

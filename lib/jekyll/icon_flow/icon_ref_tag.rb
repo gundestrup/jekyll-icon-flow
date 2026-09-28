@@ -32,7 +32,7 @@ module Jekyll
         key, params = name_and_params(context)
         pack, name, extra_class = registry_entry(site, key)
         params["class"] = [extra_class, params["class"]].compact.join(" ").strip
-        adapter_class(site, pack).new(site).render(name, params)
+        adapter_instance(site, pack).render(name, params)
       end
 
       def registry_entry(site, key)

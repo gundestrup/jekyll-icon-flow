@@ -81,13 +81,42 @@ The gem vendors a curated subset of lucide and simple-icons. Add icons
 beyond the subset — or shadow any vendored icon — by dropping SVGs into
 your custom dir and reaching them via `{% icon_custom %}`.
 
+Extra packs you download wholesale (Font Awesome, Tabler, Heroicons…) get
+a named pack via `icon_flow.packs` instead of mixing into the custom dir:
+
+```yaml
+icon_flow:
+  packs:
+    fontawesome: assets/icons/fontawesome   # dir of *.svg
+    tabler: vendor/tabler/icons
+```
+
+Named packs work through `pack:` (`{% icon bars pack:fontawesome %}`), the
+`{% icon %}` search chain, and `icon_flow.registry` targets
+(`menu: tabler:menu`). Liquid registers tag names statically, so named
+packs have no `{% icon_fontawesome %}` tag — use `{% icon %}` or
+`{% icon_ref %}`.
+
+## `{% icon %}` resolution order
+
+The generic tag searches packs in order and renders the first hit —
+default chain **custom → simple → lucide**, so `{% icon github %}` finds
+the brand icon and `{% icon search %}` finds the lucide one without any
+`pack:`. On collisions the earlier pack wins (`x` and `rss` exist in both
+bundled packs → simple wins by default; bound tags like
+`{% icon_lucide x %}` are unaffected). Pins override the chain:
+`{% icon name pack:simple %}` or a configured `icon_flow.pack` restrict
+the lookup to that one pack.
+
 ## Config
 
 ```yaml
 icon_flow:
   enabled: true                    # false = all icon tags render nothing
-  pack: lucide                     # default pack for {% icon %}
+  pack: null                       # pin {% icon %} to one pack; null = search chain
+  search: [custom, simple, lucide] # {% icon %} resolution order (default shown)
   custom_dir: assets/icons/custom  # site-relative dir for icon_custom
+  packs: {}                        # name → site-relative dir of *.svg
   on_missing: warn                 # warn (log + render "") | strict (raise)
   registry: {}                     # semantic_name → "pack:icon[:class]"
 ```
