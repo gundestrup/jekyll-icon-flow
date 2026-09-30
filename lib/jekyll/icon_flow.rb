@@ -5,6 +5,7 @@ require "liquid"
 
 require_relative "icon_flow/version"
 require_relative "icon_flow/error"
+require_relative "icon_flow/svg_reader"
 require_relative "icon_flow/adapter"
 require_relative "icon_flow/adapters/lucide"
 require_relative "icon_flow/adapters/simple"

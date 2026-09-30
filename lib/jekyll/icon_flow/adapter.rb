@@ -60,7 +60,7 @@ module Jekyll
         path = path_for(name)
         raise Error, "icon '#{name}' not found in pack '#{pack_name}'" unless path
 
-        normalize(File.read(path), name, options)
+        normalize(SvgReader.read(path), name, options)
       end
 
       private

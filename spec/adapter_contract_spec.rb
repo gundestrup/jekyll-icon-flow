@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "tmpdir"
 
 # Contract test: the same normalized output shape must hold for every
 # registered adapter — swap packs, keep styling (adapter-contract-testing
@@ -19,6 +20,38 @@ RSpec.describe "adapter output contract" do
     html = adapter.send(:normalize, svg, "star", {})
     expect(html).to include('<path fill="currentColor" stroke="currentColor"')
     expect(html).to include('fill="none" stroke="url(#gradient)"')
+  end
+
+  # User-supplied SVGs (custom_dir, icon_flow.packs) are bytes of unknown
+  # provenance — a Latin-1 download must not crash the build.
+  describe "SVG byte encoding" do
+    def render_bytes(bytes)
+      Dir.mktmpdir do |dir|
+        File.binwrite(File.join(dir, "icon.svg"), bytes)
+        Jekyll::IconFlow::Adapters::Custom.new(nil, dir: dir).render("icon", {})
+      end
+    end
+
+    it "falls back to Latin-1 when the bytes are not valid UTF-8" do
+      html = render_bytes("<svg viewBox=\"0 0 1 1\"><!-- Sm\xE6l --></svg>".b)
+      expect(html.encoding).to eq(Encoding::UTF_8)
+      expect(html).to include("icon icon-icon")
+      expect(html).to include("Smæl")
+    end
+
+    it "honours an XML encoding declaration" do
+      html = render_bytes(
+        "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>" \
+        "<svg viewBox=\"0 0 1 1\"><!-- Sm\xE6l --></svg>".b
+      )
+      expect(html).to include("Smæl")
+    end
+
+    it "strips a UTF-8 BOM before the root element" do
+      html = render_bytes("\xEF\xBB\xBF<svg viewBox=\"0 0 1 1\"></svg>".b)
+      expect(html).not_to start_with("\uFEFF")
+      expect(html).to include("data-icon-pack")
+    end
   end
 
   Jekyll::IconFlow::ADAPTERS.each_key do |pack|
