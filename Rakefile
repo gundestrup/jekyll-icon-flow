@@ -57,7 +57,9 @@ task :package do
 end
 
 task :semgrep do
-  sh "semgrep", "scan", "--config", ".semgrep.yml", "--error", "--metrics", "off", "lib/"
+  # Scan "." not an explicit path: semgrep limits itself to git-tracked
+  # files, and a stale scan root is a hard error if the dir is removed.
+  sh "semgrep", "scan", "--config", ".semgrep.yml", "--error", "--metrics", "off", "."
 end
 
 task quick: %i[rubocop spec]
