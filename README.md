@@ -1,9 +1,16 @@
 # jekyll-icon-flow
 
+[![Status: Active](https://img.shields.io/badge/status-active-success)](https://github.com/gundestrup/jekyll-icon-flow)
 [![CI](https://github.com/gundestrup/jekyll-icon-flow/actions/workflows/ci.yml/badge.svg)](https://github.com/gundestrup/jekyll-icon-flow/actions/workflows/ci.yml)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gundestrup/jekyll-icon-flow)
+[![Gem Version](https://img.shields.io/gem/v/jekyll-icon-flow)](https://rubygems.org/gems/jekyll-icon-flow)
 [![Codecov](https://codecov.io/gh/gundestrup/jekyll-icon-flow/graph/badge.svg)](https://codecov.io/gh/gundestrup/jekyll-icon-flow)
-[![SonarCloud: setup pending](https://img.shields.io/badge/SonarCloud-setup%20pending-orange)](https://sonarcloud.io/dashboard?id=gundestrup_jekyll-icon-flow)
+[![Ruby](https://img.shields.io/badge/ruby-%E2%89%A5%203.3-red.svg)](https://www.ruby-lang.org/)
+[![Jekyll](https://img.shields.io/badge/jekyll-4.x-blue.svg)](https://jekyllrb.com/)
+[![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](LICENSE.txt)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gundestrup/jekyll-icon-flow)
+[![CodeFactor](https://www.codefactor.io/repository/github/gundestrup/jekyll-icon-flow/badge)](https://www.codefactor.io/repository/github/gundestrup/jekyll-icon-flow)
+[![Semgrep CE](https://img.shields.io/badge/Semgrep_CE-security-success)](https://github.com/gundestrup/jekyll-icon-flow)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gundestrup_jekyll-icon-flow&metric=alert_status)](https://sonarcloud.io/dashboard?id=gundestrup_jekyll-icon-flow)
 
 Pack-agnostic inline SVG icons for Jekyll via Liquid tags. Each icon pack
 is an adapter that resolves names to SVG sources and normalizes the output —
@@ -157,7 +164,7 @@ Run `bundle exec rake "version:bump[patch]"` to update the gem version and
 lockfile, then add a dated changelog entry before
 `bundle exec rake version:pre_release`. Publishing requires configuring the
 GitHub `release` environment and RubyGems trusted publishing first.
-The SonarCloud badge remains pending until the repository is onboarded; its
+SonarCloud analyses the repository automatically; its
 vendored icons are excluded in `.sonarcloud.properties`.
 
 ## License
