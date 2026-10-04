@@ -1,0 +1,35 @@
+{
+  "repo_notes": [
+    { "content": "Jekyll plugin (Ruby >= 3.3) providing pack-agnostic inline SVG icons via Liquid tags. Each icon pack (lucide, simple, custom) is an adapter resolving names to SVG sources and normalizing output — switching packs changes the icon, not the styling." },
+    { "content": "Tags: {% icon %} (default pack), {% icon_lucide %}, {% icon_simple %}, {% icon_custom %}, plus fleet-convention aliases {% lucide_icon %} etc. so templates written for jekyll-lucide drop in unchanged. Same-name collisions across packs are disambiguated by tag name." },
+    { "content": "{% icon_ref %} implements a central registry: icon_flow.registry maps semantic names (download, github, danger) to pack:name[:class] triples — call sites name intent, swapping a pack updates every usage." },
+    { "content": "Parameters: size: (named sizes xxs..xxl as em-relative values, or any nonnegative CSS length), class: merged onto the <svg>, title: rendered as <title> for accessibility." },
+    { "content": "See AGENTS.md / README.md for conventions and the trusted-publishing release workflow." }
+  ],
+  "pages": [
+    {
+      "title": "Architecture Overview",
+      "purpose": "Pack-adapter architecture: Liquid tags -> pack adapters -> SVG source resolution -> normalized <svg> output with size/class/title",
+      "page_notes": [{ "content": "Include Mermaid diagram: tag -> adapter -> icon source -> normalized svg" }]
+    },
+    {
+      "title": "Tags and Parameters",
+      "purpose": "All Liquid tags ({% icon %}, per-pack tags, aliases), parameter semantics (size/class/title/pack), and collision disambiguation by tag name",
+      "parent": "Architecture Overview"
+    },
+    {
+      "title": "Icon Packs",
+      "purpose": "The pack adapter contract, built-in packs (lucide, simple, custom), how custom icons are resolved, and how to add a new pack",
+      "parent": "Architecture Overview"
+    },
+    {
+      "title": "Semantic Registry",
+      "purpose": "icon_flow.registry and {% icon_ref %}: semantic names mapped to pack:name[:class], and how the third class field merges into output",
+      "parent": "Architecture Overview"
+    },
+    {
+      "title": "Configuration and Release",
+      "purpose": "icon_flow config keys and defaults, quality gates (RuboCop/RSpec/Codecov/SonarCloud), and tag-push release workflow via OIDC trusted publishing"
+    }
+  ]
+}
