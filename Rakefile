@@ -3,6 +3,7 @@
 require "rspec/core/rake_task"
 require "rubocop/rake_task"
 require "bundler/audit/task"
+require "bundler/gem_tasks"
 require "rubygems/package"
 
 RSpec::Core::RakeTask.new(:spec)

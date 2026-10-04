@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   release:
+    name: Build and publish RubyGem
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -24,25 +25,21 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@984c0c890880bbf811283d6f09c4607c62d210a4 # v1.323.0
         with:
-          ruby-version: "3.4"
           bundler-cache: true
+          # no ruby-version: — setup-ruby reads .ruby-version (single source)
 
       - name: Install Semgrep
-        run: |
-          pip3 install --only-binary :all: "semgrep==1.176.0"
+        run: pip3 install --only-binary ":all:" semgrep==1.176.0
 
       - name: Verify version and run release checks
         run: |
           test "v$(bundle exec rake version:show)" = "$GITHUB_REF_NAME"
           bundle exec rake version:pre_release
 
-      - name: Configure RubyGems trusted publishing
-        uses: rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a # v2.1.0
-
-      - name: Publish gem
-        run: gem push "jekyll-icon-flow-${GITHUB_REF_NAME#v}.gem"
-
-      - name: Publish GitHub release
-        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
+      - name: Upload gem to GitHub release
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           files: "*.gem"
+
+      - name: Publish to RubyGems
+        uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
