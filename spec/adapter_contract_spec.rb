@@ -75,6 +75,19 @@ RSpec.describe "adapter output contract" do
         names = Jekyll::IconFlow::ADAPTERS[pack].new(site).icon_names
         expect(names).to include(CONTRACT_ICONS.fetch(pack))
       end
+
+      # Smoke test: every vendored SVG normalizes — a corrupt file fails
+      # here, not on the first page that uses it.
+      it "renders every vendored icon without error" do
+        adapter = Jekyll::IconFlow::ADAPTERS[pack].new(site)
+        names = adapter.icon_names
+        expect(names).not_to be_empty
+        names.each do |icon|
+          html = adapter.render(icon, {})
+          expect(html).to include('role="img"')
+          expect(html).to include(%(data-icon-pack="#{pack}"))
+        end
+      end
     end
   end
 end

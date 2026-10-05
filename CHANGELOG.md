@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Per-pack smoke spec rendering every vendored icon — a corrupt bundled
+  SVG now fails the suite instead of the first page that uses it.
+
 ## [0.1.0] - 2026-10-04
 
 - `{% icon %}` + per-pack `{% icon_<pack> %}` Liquid tags (lucide,
