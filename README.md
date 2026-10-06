@@ -9,7 +9,7 @@
 [![License: AGPL v3](https://img.shields.io/badge/license-AGPL--3.0--or--later-blue.svg)](LICENSE.txt)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gundestrup/jekyll-icon-flow)
 [![CodeFactor](https://www.codefactor.io/repository/github/gundestrup/jekyll-icon-flow/badge)](https://www.codefactor.io/repository/github/gundestrup/jekyll-icon-flow)
-[![Semgrep CE](https://img.shields.io/badge/Semgrep_CE-security-success)](https://github.com/gundestrup/jekyll-icon-flow)
+[![Semgrep](https://img.shields.io/badge/Semgrep-security-success)](https://github.com/gundestrup/jekyll-icon-flow)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=gundestrup_jekyll-icon-flow&metric=alert_status)](https://sonarcloud.io/dashboard?id=gundestrup_jekyll-icon-flow)
 
 Pack-agnostic inline SVG icons for Jekyll via Liquid tags. Each icon pack
