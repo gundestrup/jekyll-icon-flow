@@ -164,8 +164,9 @@ Run `bundle exec rake "version:bump[patch]"` to update the gem version and
 lockfile, then add a dated changelog entry before
 `bundle exec rake version:pre_release`. Publishing requires configuring the
 GitHub `release` environment and RubyGems trusted publishing first.
-SonarCloud analyses the repository automatically; its
-vendored icons are excluded in `.sonarcloud.properties`.
+SonarQube Cloud analyses the repository in CI (scan step in
+`.github/workflows/ci.yml`); its vendored icons are excluded in
+`sonar-project.properties`.
 
 ## License
 
