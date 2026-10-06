@@ -12,6 +12,7 @@ require_relative "icon_flow/adapters/simple"
 require_relative "icon_flow/adapters/custom"
 require_relative "icon_flow/icon_tag"
 require_relative "icon_flow/icon_ref_tag"
+require_relative "icon_flow/interface"
 
 module Jekyll
   module IconFlow

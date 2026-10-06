@@ -6,6 +6,12 @@
 
 - Per-pack smoke spec rendering every vendored icon — a corrupt bundled
   SVG now fails the suite instead of the first page that uses it.
+- `Jekyll::IconFlow::Interface.to_h` — the public tag/param/config/enum
+  surface (including adapter-bound `icon_<pack>` tags and the vendored
+  icon listing) derived from `ADAPTERS`/`SIZES`, serialized to a
+  committed `interface.yml` by `rake interface`.
+- `spec/interface_spec.rb` pins code ↔ manifest ↔ docs and vendored-SVG
+  ↔ manifest parity for the VS Code extension.
 
 ## [0.1.0] - 2026-10-04
 
