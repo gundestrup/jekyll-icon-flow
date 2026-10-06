@@ -169,5 +169,6 @@ vendored icons are excluded in `.sonarcloud.properties`.
 
 ## License
 
-AGPL-3.0-or-later. Vendored icons keep their own licenses
-(lucide: ISC; simple-icons: CC0-1.0).
+Copyright (C) 2026 Svend Gundestrup.
+AGPL-3.0-or-later — see [LICENSE.txt](LICENSE.txt). Vendored icons keep
+their own licenses (lucide: ISC; simple-icons: CC0-1.0).

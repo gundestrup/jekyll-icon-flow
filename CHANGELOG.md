@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- `LICENSE.txt` now contains the verbatim AGPL-3.0 text (was a stub
+  that license scanners could not detect); copyright attribution moved
+  to the README license section.
+
 ### Added
 
 - Per-pack smoke spec rendering every vendored icon — a corrupt bundled
