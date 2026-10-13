@@ -72,7 +72,7 @@ module Jekyll
       def normalize(svg, icon_name, options)
         svg = svg.strip.sub(/\A<\?xml[^?]*\?>\s*/, "")
         svg = normalize_custom_colors(svg) if self.class::COLOR_MODEL == :auto
-        svg = svg.sub(/<svg[^>]*>/) { |tag| normalize_root(tag, icon_name, options) }
+        svg = replace_root_tag(svg) { |tag| normalize_root(tag, icon_name, options) }
         options["title"] ? inject_title(svg, options["title"].to_s) : svg
       end
 
@@ -98,7 +98,19 @@ module Jekyll
       end
 
       def inject_title(svg, title)
-        svg.sub(/<svg[^>]*>/) { |tag| "#{tag}<title>#{CGI.escapeHTML(title)}</title>" }
+        replace_root_tag(svg) { |tag| "#{tag}<title>#{CGI.escapeHTML(title)}</title>" }
+      end
+
+      # Substitutes the block result for the first "<svg ...>" root
+      # tag: the first "<svg" through the next ">", the same span as
+      # /<svg[^>]*>/. index lookups stay linear even on input with many
+      # "<svg" occurrences, where the regex rescans the tail for each.
+      def replace_root_tag(svg)
+        tag_start = svg.index("<svg")
+        tag_end = tag_start && svg.index(">", tag_start)
+        return svg unless tag_end
+
+        "#{svg[0...tag_start]}#{yield svg[tag_start..tag_end]}#{svg[(tag_end + 1)..]}"
       end
 
       # :stroke packs (lucide) already carry stroke="currentColor";
