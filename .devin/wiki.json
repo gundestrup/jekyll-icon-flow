@@ -1,25 +1,42 @@
 {
   "repo_notes": [
-    { "content": "Jekyll plugin (Ruby >= 3.3) providing pack-agnostic inline SVG icons via Liquid tags. Each icon pack (lucide, simple, custom) is an adapter resolving names to SVG sources and normalizing output — switching packs changes the icon, not the styling." },
-    { "content": "Tags: {% icon %} (default pack), {% icon_lucide %}, {% icon_simple %}, {% icon_custom %}, plus fleet-convention aliases {% lucide_icon %} etc. so templates written for jekyll-lucide drop in unchanged. Same-name collisions across packs are disambiguated by tag name." },
-    { "content": "{% icon_ref %} implements a central registry: icon_flow.registry maps semantic names (download, github, danger) to pack:name[:class] triples — call sites name intent, swapping a pack updates every usage." },
-    { "content": "Parameters: size: (named sizes xxs..xxl as em-relative values, or any nonnegative CSS length), class: merged onto the <svg>, title: rendered as <title> for accessibility." },
-    { "content": "See AGENTS.md / README.md for conventions and the trusted-publishing release workflow." }
+    {
+      "content": "Jekyll plugin (Ruby >= 3.3) providing pack-agnostic inline SVG icons via Liquid tags. Each built-in icon pack (lucide, simple, custom) is an adapter resolving names to SVG sources and normalizing output — switching packs changes the icon, not the styling."
+    },
+    {
+      "content": "Tags: {% icon %} (default pack), {% icon_lucide %}, {% icon_simple %}, {% icon_custom %}, plus fleet-convention aliases {% lucide_icon %} etc. so templates written for jekyll-lucide drop in unchanged. Same-name collisions across packs are disambiguated by tag name."
+    },
+    {
+      "content": "{% icon %} resolves via a configurable search chain (default custom -> simple -> lucide); icon_flow.pack or a pack: parameter pins the lookup to one pack. Extra downloaded packs (Font Awesome, Tabler, Heroicons) become named packs via icon_flow.packs, reached through pack:, the search chain, or registry targets — Liquid registers tag names statically, so named packs get no {% icon_<name> %} tag."
+    },
+    {
+      "content": "{% icon_ref %} implements a central registry: icon_flow.registry maps semantic names (download, github, danger) to pack:name[:class] triples — call sites name intent, swapping a pack updates every usage."
+    },
+    {
+      "content": "Parameters: size: (named sizes xxs..xxl as em-relative values, or any nonnegative CSS length), class: merged onto the <svg>, title: rendered as <title> for accessibility."
+    },
+    {
+      "content": "See README.md for conventions and the trusted-publishing release workflow."
+    }
   ],
   "pages": [
     {
       "title": "Architecture Overview",
       "purpose": "Pack-adapter architecture: Liquid tags -> pack adapters -> SVG source resolution -> normalized <svg> output with size/class/title",
-      "page_notes": [{ "content": "Include Mermaid diagram: tag -> adapter -> icon source -> normalized svg" }]
+      "page_notes": [
+        {
+          "content": "Include Mermaid diagram: tag -> adapter -> icon source -> normalized svg"
+        }
+      ]
     },
     {
       "title": "Tags and Parameters",
-      "purpose": "All Liquid tags ({% icon %}, per-pack tags, aliases), parameter semantics (size/class/title/pack), and collision disambiguation by tag name",
+      "purpose": "All Liquid tags ({% icon %}, per-pack tags, fleet aliases), parameter semantics (size/class/title/pack), the {% icon %} search-chain resolution order (custom -> simple -> lucide), and collision disambiguation by tag name",
       "parent": "Architecture Overview"
     },
     {
       "title": "Icon Packs",
-      "purpose": "The pack adapter contract, built-in packs (lucide, simple, custom), how custom icons are resolved, and how to add a new pack",
+      "purpose": "The pack adapter contract (pack_name, path_for, icons_dir, COLOR_MODEL), built-in packs (lucide, simple, custom), vendored icon subsets, custom-dir shadowing, named packs via icon_flow.packs, and how to add a new adapter pack",
       "parent": "Architecture Overview"
     },
     {
@@ -29,7 +46,7 @@
     },
     {
       "title": "Configuration and Release",
-      "purpose": "icon_flow config keys and defaults, quality gates (RuboCop/RSpec/Codecov/SonarCloud), and tag-push release workflow via OIDC trusted publishing"
+      "purpose": "icon_flow config keys and defaults (enabled, pack, search, custom_dir, packs, on_missing, registry), quality gates (RuboCop/RSpec/Codecov/SonarCloud/Semgrep), and tag-push release workflow via OIDC trusted publishing"
     }
   ]
 }
