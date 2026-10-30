@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-10-30
+
 ### Changed
 
 - CI: Semgrep bumped 1.176.0 → 1.182.0 — the standalone job runs the digest-pinned `semgrep/semgrep:1.182.0` container image; matrix/release jobs install it via `pipx install semgrep==1.182.0`. Added `.github/dependabot.yml` covering github-actions and bundler updates.
