@@ -33,7 +33,14 @@ jobs:
         uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
+          # bundler-cache runs `bundle install` frozen — the committed lockfile
+          # doesn't match pinned legs' env-gated Gemfile, so they install
+          # unfrozen below and resolve fresh.
+          bundler-cache: ${{ matrix.jekyll == 'latest' }}
+
+      - name: Install dependencies
+        if: matrix.jekyll != 'latest'
+        run: bundle install
 
       - name: Install Semgrep
         if: matrix.jekyll == 'latest'
