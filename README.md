@@ -52,7 +52,7 @@ coexist. Swap `icon_lucide` for `icon_simple` and the icon changes while
 ### Parameters
 
 | Param | Default | Effect |
-|---|---|---|
+| --- | --- | --- | --- |
 | `size:` | `m` (`1em`) | Named size `xxs`/`xs`/`s`/`m`/`l`/`xl`/`xxl` (0.5/0.75/0.875/1/1.25/1.5/2 em — relative, so icons scale with surrounding text; default `m` = 1em fits the line height) or a nonnegative CSS length (`px`, `em`, `rem`, `%`, `vw`, `vh`, `vmin`, `vmax`, `ch`, `ex`) or `0`, applied to `width`/`height` |
 | `class:` | — | merged onto the `<svg>` alongside `icon icon-<name>` |
 | `title:` | — | accessible label, rendered as `<title>` in the SVG |
@@ -79,7 +79,7 @@ icon_flow:
 ## Packs
 
 | Tag | Pack | License | Notes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `icon_lucide` / `lucide_icon` | [Lucide](https://lucide.dev) | ISC | UI icons, stroke style |
 | `icon_simple` / `simple_icon` | [simple-icons](https://simpleicons.org) | CC0 | brand logos, fill style |
 | `icon_custom` / `custom_icon` | your files | — | `icon_flow.custom_dir`, e.g. [svgrepo](https://www.svgrepo.com/) downloads (keep `-svgrepo-com.svg` attribution in filenames, per the fleet convention) |
@@ -157,9 +157,9 @@ Every icon renders normalized SVG:
 ## Development and release checks
 
 Run `bundle exec rake ci` for RuboCop, dependency audit, local Semgrep rules,
-RSpec with SimpleCov and packaged-gem contents. Coverage is written to
+Minitest with SimpleCov and packaged-gem contents. Coverage is written to
 `coverage/index.html` locally and `coverage/coverage.xml` in CI for Codecov.
-`COVERAGE=false bundle exec rspec` skips instrumentation during focused work.
+`COVERAGE=false bundle exec rake test` skips instrumentation during focused work.
 Run `bundle exec rake "version:bump[patch]"` to update the gem version and
 lockfile, then add a dated changelog entry before
 `bundle exec rake version:pre_release`. Publishing requires configuring the

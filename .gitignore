@@ -2,7 +2,7 @@
 /pkg/
 /vendor/
 /tmp/
-/spec/_site/
+/test/fixtures/_site/
 /coverage/
 *.gem
 .DS_Store

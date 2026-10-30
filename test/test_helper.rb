@@ -11,47 +11,48 @@ unless ENV["COVERAGE"] == "false"
     )
   end
   SimpleCov.start do
+    command_name ENV.fetch("COVERAGE_RUN", "Unit Tests")
+    enable_coverage :branch
     cover "lib/**/*.rb"
-    minimum_coverage 90 if ENV["CI"]
+    minimum_coverage line: 98, branch: 75 if ENV["CI"]
   end
 end
+
+PROJECT_ROOT = File.expand_path("..", __dir__)
 
 require "jekyll-icon-flow"
 require "jekyll_test_harness"
 require "liquid"
+require "minitest/autorun"
+require "minitest/mock"
 
-JekyllTestHarness.install!(framework: :rspec)
-
-RSpec.configure do |config|
-  config.disable_monkey_patching!
-  config.expect_with :rspec do |expectations|
-    expectations.syntax = :expect
-  end
-end
+JekyllTestHarness.install!(framework: :minitest)
 
 # Real Jekyll::Site (host-object testing, not mocks). Source points at
-# spec/fixtures so the custom adapter can read fixture SVGs; destination
+# test/fixtures so the custom adapter can read fixture SVGs; destination
 # is a throwaway dir — nothing is ever built.
-def make_site(config = {})
-  Jekyll::Site.new(Jekyll.configuration(
-                     {
-                       "source" => File.expand_path("fixtures", __dir__),
-                       "destination" => File.expand_path("fixtures/_site", __dir__)
-                     }.merge(config)
-                   ))
-end
+class IconFlowTest < Minitest::Test
+  def make_site(config = {})
+    Jekyll::Site.new(Jekyll.configuration(
+                       {
+                         "source" => File.expand_path("fixtures", __dir__),
+                         "destination" => File.expand_path("fixtures/_site", __dir__)
+                       }.merge(config)
+                     ))
+  end
 
-def liquid_context(site: nil, vars: {})
-  ctx = Liquid::Context.new(vars)
-  ctx.registers[:site] = site || make_site
-  ctx
-end
+  def liquid_context(site: nil, vars: {})
+    ctx = Liquid::Context.new(vars)
+    ctx.registers[:site] = site || make_site
+    ctx
+  end
 
-def render_tag(markup, site: nil, vars: {})
-  Liquid::Template.parse("{% #{markup} %}").render(liquid_context(site: site, vars: vars))
-end
+  def render_tag(markup, site: nil, vars: {})
+    Liquid::Template.parse("{% #{markup} %}").render(liquid_context(site: site, vars: vars))
+  end
 
-# render! raises tag errors instead of emitting "Liquid error: internal"
-def render_tag!(markup, site: nil, vars: {})
-  Liquid::Template.parse("{% #{markup} %}").render!(liquid_context(site: site, vars: vars))
+  # render! raises tag errors instead of emitting "Liquid error: internal"
+  def render_tag!(markup, site: nil, vars: {})
+    Liquid::Template.parse("{% #{markup} %}").render!(liquid_context(site: site, vars: vars))
+  end
 end

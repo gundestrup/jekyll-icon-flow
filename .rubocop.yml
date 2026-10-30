@@ -3,6 +3,9 @@ AllCops:
   SuggestExtensions: false
   TargetRubyVersion: 3.3
 
+plugins:
+  - rubocop-minitest
+
 Style/Documentation:
   Enabled: false
 
@@ -17,6 +20,29 @@ Naming/FileName:
   Exclude:
     - lib/jekyll-icon-flow.rb
 
+Metrics/AbcSize:
+  Exclude:
+    - test/**/*
+
 Metrics/BlockLength:
   Exclude:
-    - spec/**/*
+    - test/**/*
+
+Metrics/ClassLength:
+  Exclude:
+    - test/**/*
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - test/**/*
+
+Metrics/MethodLength:
+  Exclude:
+    - test/**/*
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - test/**/*
+
+Minitest/MultipleAssertions:
+  Enabled: false

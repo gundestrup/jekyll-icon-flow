@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require "test_helper"
 
 # Full-build integration: a real site whose pages use the tags, built
 # through Jekyll::Site#process — not just tag rendering in isolation.
-RSpec.describe "site build integration" do
-  it "renders all tag forms into the generated page" do
+class SiteBuildTest < IconFlowTest
+  def test_renders_all_tag_forms_into_the_generated_page
     files = jekyll_files do
       file "_layouts/default.html" do
         contents "<html><body>{{ content }}</body></html>"
@@ -31,14 +31,15 @@ RSpec.describe "site build integration" do
       files: files
     ) do |site|
       html = site.pages.find { |p| p.url == "/" }.output
-      expect(html).to include('data-icon-pack="lucide"')
-      expect(html).to include('data-icon-pack="simple"')
-      expect(html).to include('data-icon-pack="custom"')
-      expect(html).to include("icon-arrow-down")
+
+      assert_includes html, 'data-icon-pack="lucide"'
+      assert_includes html, 'data-icon-pack="simple"'
+      assert_includes html, 'data-icon-pack="custom"'
+      assert_includes html, "icon-arrow-down"
     end
   end
 
-  it "fails a real build for a missing icon in strict mode" do
+  def test_fails_a_real_build_for_a_missing_icon_in_strict_mode
     files = jekyll_files do
       file "index.md" do
         frontmatter("title" => "Home")
@@ -46,14 +47,15 @@ RSpec.describe "site build integration" do
       end
     end
 
-    expect do
+    error = assert_raises(JekyllTestHarness::SiteBuildError) do
       jekyll_build(config: { "icon_flow" => { "on_missing" => "strict" } }, files: files) do |_site|
         nil
       end
-    end.to raise_error(JekyllTestHarness::SiteBuildError, /not found/)
+    end
+    assert_match(/not found/, error.message)
   end
 
-  it "survives a missing icon in warn mode without failing the build" do
+  def test_survives_a_missing_icon_in_warn_mode_without_failing_the_build
     files = jekyll_files do
       file "_layouts/default.html" do
         contents "<html><body>{{ content }}</body></html>"
@@ -66,8 +68,9 @@ RSpec.describe "site build integration" do
 
     jekyll_build(files: files) do |site|
       html = site.pages.find { |p| p.url == "/" }.output
-      expect(html).to include("before")
-      expect(html).to include("after")
+
+      assert_includes html, "before"
+      assert_includes html, "after"
     end
   end
 end

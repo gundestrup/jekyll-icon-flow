@@ -1,13 +1,42 @@
 # frozen_string_literal: true
 
-require "rspec/core/rake_task"
-require "rubocop/rake_task"
+require "rake/testtask"
 require "bundler/audit/task"
 require "bundler/gem_tasks"
 require "rubygems/package"
 
-RSpec::Core::RakeTask.new(:spec)
-RuboCop::RakeTask.new
+begin
+  require "rubocop/rake_task"
+  RuboCop::RakeTask.new
+rescue LoadError
+  # rubocop is excluded on pinned-Jekyll CI legs (dependency conflict)
+end
+
+task :unit_coverage_env do
+  ENV["COVERAGE_RUN"] = "Unit Tests"
+end
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test"
+  t.test_files = FileList["test/**/*_test.rb"].exclude("test/system/**/*_test.rb")
+  t.warning = true
+end
+task test: :unit_coverage_env
+
+namespace :test do
+  task :system_coverage_env do
+    ENV["COVERAGE_RUN"] = "System Tests"
+  end
+
+  desc "Run system tests against the built and installed gem"
+  Rake::TestTask.new(:system) do |t|
+    t.libs << "test"
+    t.test_files = FileList["test/system/**/*_test.rb"]
+    t.warning = true
+  end
+  task system: :system_coverage_env
+end
+
 Bundler::Audit::Task.new
 
 VERSION_FILE = "lib/jekyll/icon_flow/version.rb"
@@ -73,7 +102,7 @@ task :interface do
              Jekyll::IconFlow::Interface.to_h.to_yaml)
 end
 
-task quick: %i[rubocop spec]
-task ci: %i[rubocop bundle:audit semgrep spec version:check package]
+task quick: %i[rubocop test]
+task ci: %i[rubocop bundle:audit semgrep test test:system version:check package]
 task "version:pre_release" => %i[ci version:check_changelog]
 task default: :quick

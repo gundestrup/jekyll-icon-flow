@@ -1,25 +1,27 @@
 # frozen_string_literal: true
 
-require "spec_helper"
+require "test_helper"
 require "yaml"
 
-RSpec.describe "interface manifest" do
-  root = File.expand_path("..", __dir__)
-  interface = Jekyll::IconFlow::Interface.to_h
+class InterfaceManifestTest < IconFlowTest
+  ROOT = File.expand_path("..", __dir__)
+  INTERFACE = Jekyll::IconFlow::Interface.to_h
 
-  it "matches the committed interface.yml" do
-    manifest = YAML.load_file(File.join(root, "interface.yml"))
-    expect(manifest).to eq(interface)
+  def test_matches_the_committed_interface_yml
+    manifest = YAML.load_file(File.join(ROOT, "interface.yml"))
+
+    assert_equal INTERFACE, manifest
   end
 
-  it "has every declared tag registered with Liquid" do
+  def test_has_every_declared_tag_registered_with_liquid
     registered = Liquid::Template.tags.map(&:first)
-    expect(interface["tags"].keys - registered).to be_empty
+
+    assert_empty(INTERFACE["tags"].keys - registered)
   end
 
-  it "lists exactly the param keys the tags and adapters read" do
+  def test_lists_exactly_the_param_keys_the_tags_and_adapters_read
     sources = %w[icon_tag.rb icon_ref_tag.rb adapter.rb].map do |file|
-      File.read(File.join(root, "lib/jekyll/icon_flow", file))
+      File.read(File.join(ROOT, "lib/jekyll/icon_flow", file))
     end.join("\n")
     pattern = /(?:params|options)\s*(?:\[\s*["'](\w+)["']\s*\]|\.delete\(\s*["'](\w+)["']\s*\))/
     used = []
@@ -28,11 +30,12 @@ RSpec.describe "interface manifest" do
       used << match.captures.compact.first
       pos = match.end(0)
     end
-    expect(used.uniq.sort).to eq(%w[class pack size title])
+
+    assert_equal %w[class pack size title], used.uniq.sort
   end
 
-  it "declares exactly the config keys read via dig" do
-    sources = Dir[File.join(root, "lib/**/*.rb")].map { |f| File.read(f) }.join("\n")
+  def test_declares_exactly_the_config_keys_read_via_dig
+    sources = Dir[File.join(ROOT, "lib/**/*.rb")].map { |f| File.read(f) }.join("\n")
     dig_pattern = /dig\("icon_flow",\s*"(\w+)"/
     read = []
     pos = 0
@@ -41,33 +44,33 @@ RSpec.describe "interface manifest" do
       pos = match.end(0)
     end
     read = read.uniq.sort
-    expect(interface.dig("config", "icon_flow")).to eq(read)
+
+    assert_equal read, INTERFACE.dig("config", "icon_flow")
   end
 
-  it "documents every tag, param, config key, and enum value" do
-    docs = (Dir[File.join(root, "*.md")] +
-            Dir[File.join(root, "docs/**/*.md")])
+  def test_documents_every_tag_param_config_key_and_enum_value
+    docs = (Dir[File.join(ROOT, "*.md")] +
+            Dir[File.join(ROOT, "docs/**/*.md")])
            .map { |f| File.read(f) }.join("\n")
 
     missing = []
-    interface["tags"].each do |tag, spec|
+    INTERFACE["tags"].each do |tag, spec|
       missing << "tag `#{tag}`" unless docs.match?(/\b#{tag}\b/)
       spec["params"].each do |param|
         missing << "#{tag} param `#{param}:`" unless docs.match?(/\b#{param}\s*:/)
       end
     end
-    interface["config"].each do |section, keys|
+    INTERFACE["config"].each do |section, keys|
       keys.each do |key|
         missing << "#{section} config `#{key}`" unless docs.match?(/\b#{key}\b/)
       end
     end
-    interface["enums"].each do |setting, values|
+    INTERFACE["enums"].each do |setting, values|
       values.each do |value|
         missing << "#{setting} value `#{value}`" unless docs.match?(/\b#{Regexp.escape(value)}\b/)
       end
     end
 
-    expect(missing).to be_empty,
-                       "interface items missing from docs:\n  #{missing.join("\n  ")}"
+    assert_empty missing, "interface items missing from docs:\n  #{missing.join("\n  ")}"
   end
 end
