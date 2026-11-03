@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   test:
-    name: Ruby ${{ matrix.ruby }} / Jekyll ${{ matrix.jekyll }}
+    name: Ruby ${{ matrix.ruby }} / ${{ matrix.leg.name }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -18,11 +18,15 @@ jobs:
       fail-fast: false
       matrix:
         ruby: ["3.3", "3.4"]
-        jekyll: ["~> 4.0.0", "~> 4.2.0", "latest"]
+        leg:
+          # Each leg carries its own committed lockfile so bundler-cache can
+          # install frozen everywhere; leg Gemfiles omit RuboCop (its
+          # unicode-display_width can't resolve with pre-4.3 terminal-table).
+          - { name: "Jekyll ~> 4.0.0", gemfile: "gemfiles/jekyll_40.gemfile" }
+          - { name: "Jekyll ~> 4.2.0", gemfile: "gemfiles/jekyll_42.gemfile" }
+          - { name: "Jekyll latest", gemfile: "Gemfile" }
     env:
-      # Pinned legs resolve that Jekyll minor and run test-only: RuboCop's
-      # unicode-display_width >= 2.4 can't resolve with pre-4.3 terminal-table.
-      JEKYLL_VERSION: ${{ matrix.jekyll != 'latest' && matrix.jekyll || '' }}
+      BUNDLE_GEMFILE: ${{ matrix.leg.gemfile }}
     steps:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -33,17 +37,10 @@ jobs:
         uses: ruby/setup-ruby@7f797815d8adceb1c412e7abefdd1ab4abc47a5f # v1.335.0
         with:
           ruby-version: ${{ matrix.ruby }}
-          # bundler-cache runs `bundle install` frozen — the committed lockfile
-          # doesn't match pinned legs' env-gated Gemfile, so they install
-          # unfrozen below and resolve fresh.
-          bundler-cache: ${{ matrix.jekyll == 'latest' }}
-
-      - name: Install dependencies
-        if: matrix.jekyll != 'latest'
-        run: bundle install
+          bundler-cache: true
 
       - name: Install Semgrep
-        if: matrix.jekyll == 'latest'
+        if: matrix.leg.gemfile == 'Gemfile'
         run: pipx install semgrep==1.182.0
 
       - name: Audit Ruby dependencies
@@ -51,14 +48,14 @@ jobs:
 
       - name: Run checks
         run: |
-          if [ -n "$JEKYLL_VERSION" ]; then
-            bundle exec rake test
-          else
+          if [ "$BUNDLE_GEMFILE" = "Gemfile" ]; then
             bundle exec rake ci
+          else
+            bundle exec rake test
           fi
 
       - name: Upload coverage to Codecov
-        if: matrix.ruby == '3.4' && matrix.jekyll == 'latest'
+        if: matrix.ruby == '3.4' && matrix.leg.gemfile == 'Gemfile'
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           files: coverage/coverage.xml
@@ -67,7 +64,7 @@ jobs:
           fail_ci_if_error: false
 
       - name: SonarQube Cloud scan
-        if: matrix.ruby == '3.4' && matrix.jekyll == 'latest'
+        if: matrix.ruby == '3.4' && matrix.leg.gemfile == 'Gemfile'
         uses: SonarSource/sonarqube-scan-action@4d1dc0c91ee400dcf8a6dddf2f705ac36542e304 # v8.4.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -4,10 +4,11 @@
 
 ### Fixed
 
-- CI: pinned-Jekyll matrix legs failed at `bundle install` — setup-ruby's
-  `bundler-cache` installs frozen, but a leg's `JEKYLL_VERSION`-gated Gemfile
-  never matches the committed lockfile. `bundler-cache` now runs only on the
-  `latest` leg; pinned legs install unfrozen.
+- CI: pinned-Jekyll matrix legs failed at `bundle install` — the
+  `JEKYLL_VERSION`-gated Gemfile never matched the committed lockfile under
+  frozen install. Legs now use `BUNDLE_GEMFILE` with committed
+  `gemfiles/*.gemfile.lock`, so every leg installs frozen and cacheable;
+  dependabot covers `/gemfiles`.
 
 ## [0.1.2] - 2026-10-30
 
