@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Dependency updates: `addressable` 2.9.1 → 2.9.2, `minitest`
+  6.0.6 → 6.1.0, `sass-embedded` 1.107.0 → 1.108.1; pinned-leg
+  lockfiles refreshed (`minitest` 6.1.0, `prism` 1.9.0 → 2.1.0).
+- CI: `ruby/setup-ruby` pin bumped v1.335.0 → v1.338.0;
+  `BUNDLED WITH` bumped 4.0.21 → 4.0.24.
+
 ### Fixed
 
 - CI: pinned-Jekyll matrix legs failed at `bundle install` — the
