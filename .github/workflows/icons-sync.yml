@@ -1,0 +1,68 @@
+name: Icon sync
+
+# Weekly re-vendor of assets/icons/* — opens a PR when upstream icon
+# packs released new versions (dependabot cannot track unpacked file
+# sets, so this job does the equivalent for the vendored SVGs).
+on:
+  schedule:
+    - cron: "23 4 * * 1" # Mondays 04:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Sync vendored icon packs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        with:
+          bundler-cache: true
+
+      - name: Report pack freshness
+        run: bundle exec rake icons:check
+
+      - name: Sync packs to latest upstream releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bundle exec rake icons:sync
+
+      - name: Open pull request when packs changed
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain assets/icons)" ]; then
+            echo "Vendored packs already current — nothing to do"
+            exit 0
+          fi
+          existing_pr="$(gh pr list --state open --json number,title \
+            --jq '.[] | select(.title == "chore: sync vendored icon packs") | .number' \
+            | head -n 1)"
+          if [ -n "$existing_pr" ]; then
+            echo "Icon sync PR #$existing_pr is already open; merge or close it first"
+            exit 0
+          fi
+          branch="chore/icon-sync-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              checkout -b "$branch"
+          git add assets/icons
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "chore: sync vendored icon packs
+
+          Automated weekly run of \`rake icons:sync\` — refreshes vendored
+          SVGs to the upstream releases now recorded in PACK.yml."
+          git push -u origin "$branch"
+          gh pr create --title "chore: sync vendored icon packs" \
+            --body "Automated weekly \`rake icons:sync\` run.
+
+          Vendored SVGs updated to the upstream releases recorded in each
+          pack's \`PACK.yml\`. Verify \`rake icons:check\` and the test
+          suite, then merge."

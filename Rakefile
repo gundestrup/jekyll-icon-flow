@@ -39,6 +39,28 @@ end
 
 Bundler::Audit::Task.new
 
+desc "Generate docs/assets demo page + animated captures (needs Chrome, ffmpeg, img2webp)"
+task "docs:demo" do
+  require_relative "tasks/docs_demo"
+  Jekyll::IconFlow::DocsDemo.run(Dir.pwd)
+end
+
+ICONS_ROOT = File.expand_path("assets/icons", __dir__)
+
+namespace :icons do
+  desc "Report upstream versions and local drift (STRICT=1 fails on any issue)"
+  task :check do
+    require_relative "lib/jekyll/icon_flow/pack_sync"
+    exit 1 if ENV["STRICT"] == "1" && !Jekyll::IconFlow::PackTasks.report_all?(ICONS_ROOT)
+  end
+
+  desc "Re-vendor icon packs from latest upstream releases (optionally a single pack name)"
+  task :sync, [:pack] do |_task, args|
+    require_relative "lib/jekyll/icon_flow/pack_sync"
+    Jekyll::IconFlow::PackTasks.sync_all(ICONS_ROOT, pack: args[:pack])
+  end
+end
+
 VERSION_FILE = "lib/jekyll/icon_flow/version.rb"
 GEMSPEC = "jekyll-icon-flow.gemspec"
 
@@ -104,5 +126,8 @@ end
 
 task quick: %i[rubocop test]
 task ci: %i[rubocop bundle:audit semgrep test test:system version:check package]
-task "version:pre_release" => %i[ci version:check_changelog]
+task "version:pre_release" => %i[ci version:check_changelog] do
+  ENV["STRICT"] = "1"
+  Rake::Task["icons:check"].invoke
+end
 task default: :quick

@@ -22,6 +22,10 @@ module Jekyll
         def icons_dir
           File.expand_path("../../../../assets/icons/lucide", __dir__)
         end
+
+        def icon_classes(icon_name, options)
+          "lucide lucide-#{icon_name} #{super}"
+        end
       end
     end
   end

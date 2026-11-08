@@ -16,6 +16,19 @@ Pack-agnostic inline SVG icons for Jekyll via Liquid tags. Each icon pack
 is an adapter that resolves names to SVG sources and normalizes the output —
 so switching packs changes the icon, not your styling.
 
+<!-- markdownlint-disable MD033 -->
+<picture>
+  <source
+    srcset="docs/assets/icon-flow-demo.avif"
+    type="image/avif">
+  <source
+    srcset="docs/assets/icon-flow-demo.webp"
+    type="image/webp">
+  <img src="docs/assets/icon-flow-demo.png"
+       alt="Icon tags rendered to inline SVG: packs, sizes, colors, icon_ref">
+</picture>
+<!-- markdownlint-enable MD033 -->
+
 ## Install
 
 ```ruby
@@ -52,11 +65,16 @@ coexist. Swap `icon_lucide` for `icon_simple` and the icon changes while
 ### Parameters
 
 | Param | Default | Effect |
-| --- | --- | --- | --- |
-| `size:` | `m` (`1em`) | Named size `xxs`/`xs`/`s`/`m`/`l`/`xl`/`xxl` (0.5/0.75/0.875/1/1.25/1.5/2 em — relative, so icons scale with surrounding text; default `m` = 1em fits the line height) or a nonnegative CSS length (`px`, `em`, `rem`, `%`, `vw`, `vh`, `vmin`, `vmax`, `ch`, `ex`) or `0`, applied to `width`/`height` |
+| --- | --- | --- |
+| `size:` | `m` (`1em`) | Named or CSS size applied to width and height. |
 | `class:` | — | merged onto the `<svg>` alongside `icon icon-<name>` |
 | `title:` | — | accessible label, rendered as `<title>` in the SVG |
 | `pack:` | config | only on `{% icon %}` — pick a pack explicitly |
+
+Named sizes map to `em` values: `xxs` 0.5, `xs` 0.75, `s` 0.875, `m` 1,
+`l` 1.25, `xl` 1.5, and `xxl` 2. They scale with surrounding text.
+CSS lengths accept `px`, `em`, `rem`, `%`, `vw`, `vh`, `vmin`, `vmax`,
+`ch`, `ex`, or `0`.
 
 ## Semantic icon names — `{% icon_ref %}`
 
@@ -143,7 +161,8 @@ Every icon renders normalized SVG:
   are recolored except `none` and `url(...)` references. Inline CSS styles
   and embedded stylesheets in custom SVGs are site-owned and are not rewritten
 - `icon icon-<name>` classes + `data-icon-pack` give stable CSS hooks
-  that survive a pack switch
+  that survive a pack switch; Lucide also retains its legacy
+  `lucide lucide-<name>` classes
 - missing/invalid icons warn via `Jekyll.logger` and render `""`
   (`on_missing: strict` fails the build instead)
 
@@ -153,6 +172,29 @@ Every icon renders normalized SVG:
    (`pack_name`, `path_for`, `icons_dir`, `COLOR_MODEL`).
 2. Register it in `IconFlow::ADAPTERS` in `lib/jekyll/icon_flow.rb`.
 3. `{% icon_<pack> %}` and `{% <pack>_icon %}` are registered automatically.
+
+## Icon freshness
+
+Vendored packs carry a `PACK.yml` provenance manifest (upstream repo,
+license, release tag, vendored date, per-icon SHA-256, and any unresolved
+upstream names) maintained by rake — builds read local files only, never a CDN.
+
+- `bundle exec rake icons:check` — report each pack's vendored tag vs the
+  latest upstream release, local drift, and unresolved upstream names
+  (`STRICT=1` exits non-zero if any pack needs attention).
+- `bundle exec rake icons:sync[pack]` — re-download the manifest's icon
+  list at the latest release and rewrite `PACK.yml`. Upstream renames are
+  handled by the manifest's `aliases` map (local name → upstream name), so
+  old tag names keep working with fresh bytes. Missing upstream names stay
+  recorded until a maintainer updates an alias or removes the icon.
+- `.github/workflows/icons-sync.yml` runs the sync weekly and opens a PR
+  when packs changed.
+
+`version:pre_release` runs the strict freshness check. Normal Jekyll builds
+continue to use the vendored files only; they do not access the network.
+Regenerate demo captures with `bundle exec rake docs:demo`; maintainers
+need Chrome, ffmpeg with `libsvtav1`, and `img2webp`. These host tools are
+not required by the gem or by normal Jekyll builds.
 
 ## Development and release checks
 

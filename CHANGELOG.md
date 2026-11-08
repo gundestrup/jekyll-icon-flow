@@ -2,8 +2,30 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-08
+
+### Added
+
+- Icon-pack freshness tooling: each vendored pack now carries a
+  `PACK.yml` provenance manifest (upstream repo, license, release tag,
+  vendored date, per-icon SHA-256 digests, `aliases` for upstream
+  renames, and persistent `missing_upstream` entries). `rake icons:check`
+  reports stale releases, local drift, and unresolved icons
+  (`STRICT=1` fails); `rake icons:sync[pack]` re-downloads the manifest's
+  curated icon list without blessing unrelated local files.
+- `version:pre_release` runs `icons:check` in strict mode so stale,
+  drifted, or unresolved packs block a release.
+- `.github/workflows/icons-sync.yml` — weekly scheduled sync that opens
+  a PR when upstream icon packs released new versions.
+- `rake docs:demo` — generates `docs/assets/` showcase page from real
+  adapter output and captures it as animated AVIF + WebP + static PNG
+  (headless Chrome + ffmpeg libsvtav1 + img2webp; build-host tools),
+  embedded in README via `<picture>`.
+
 ### Changed
 
+- Restored Lucide's legacy `lucide lucide-<name>` CSS classes in rendered
+  SVG while keeping vendored files byte-identical to upstream.
 - Dependency updates: `addressable` 2.9.1 → 2.9.2, `minitest`
   6.0.6 → 6.1.0, `sass-embedded` 1.107.0 → 1.108.1; pinned-leg
   lockfiles refreshed (`minitest` 6.1.0, `prism` 1.9.0 → 2.1.0).

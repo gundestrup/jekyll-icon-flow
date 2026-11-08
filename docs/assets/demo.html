@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body{font-family:system-ui,sans-serif;margin:0;padding:28px 32px;background:#fafafa;color:#1f2937}
+    h1{font-size:20px;margin:0 0 4px}
+    h2{font-size:13px;color:#6b7280;margin:0 0 26px;font-weight:500}
+    section{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:14px 18px;margin-bottom:14px}
+    .row{display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+    .card{display:flex;flex-direction:column;gap:6px;font-size:15px}
+    code{font:12px/1.4 ui-monospace,monospace;background:#f3f4f6;padding:2px 6px;border-radius:4px;color:#6b21a8}
+    .icon{display:inline-block;vertical-align:-0.125em;font-size:22px}
+    .row .icon{font-size:26px}
+    small{color:#9ca3af;font-size:10px}
+    body[data-step="1"] .s1,body[data-step="2"] .s2,body[data-step="3"] .s3{outline:3px solid #a78bfa;outline-offset:-3px}
+  </style>
+</head>
+<body>
+  <h1>jekyll-icon-flow</h1>
+  <h2>Pack-agnostic inline SVG icons - same styling contract across packs</h2>
+  <section class="s1"><div class="row"><div class="card"><span><svg role="img" data-icon-pack="lucide" style="width:1em;height:1em" class="lucide lucide-search icon icon-search"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m21 21-4.34-4.34" />
+  <circle cx="11" cy="11" r="8" />
+</svg></span><code>{% icon_lucide search %}</code></div><div class="card"><span><svg data-icon-pack="simple" fill="currentColor" style="width:1em;height:1em" class="icon icon-github" role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span><code>{% icon_simple github %}</code></div><div class="card"><span><svg role="img" data-icon-pack="lucide" style="width:1em;height:1em" class="lucide lucide-file-text icon icon-file-text"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+  <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+  <path d="M10 9H8" />
+  <path d="M16 13H8" />
+  <path d="M16 17H8" />
+</svg></span><code>{% icon_lucide file-text %}</code></div></div></section>
+  <section class="s2"><div class="row">
+    <svg role="img" data-icon-pack="lucide" style="width:0.75em;height:0.75em" class="lucide lucide-check icon icon-check"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 6 9 17l-5-5" />
+</svg><small>xs</small><svg role="img" data-icon-pack="lucide" style="width:0.875em;height:0.875em" class="lucide lucide-check icon icon-check"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 6 9 17l-5-5" />
+</svg><small>s</small><svg role="img" data-icon-pack="lucide" style="width:1em;height:1em" class="lucide lucide-check icon icon-check"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 6 9 17l-5-5" />
+</svg><small>m</small><svg role="img" data-icon-pack="lucide" style="width:1.25em;height:1.25em" class="lucide lucide-check icon icon-check"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 6 9 17l-5-5" />
+</svg><small>l</small><svg role="img" data-icon-pack="lucide" style="width:1.5em;height:1.5em" class="lucide lucide-check icon icon-check"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 6 9 17l-5-5" />
+</svg><small>xl</small><svg role="img" data-icon-pack="lucide" style="width:2em;height:2em" class="lucide lucide-check icon icon-check"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="M20 6 9 17l-5-5" />
+</svg><small>xxl</small>
+    <div class="card"><code>size:xs through xxl or any CSS size</code></div>
+  </div></section>
+  <section class="s3"><div class="row">
+    <span style="color:#6b21a8"><svg role="img" data-icon-pack="lucide" style="width:1em;height:1em" class="lucide lucide-mail icon icon-mail"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+  <rect x="2" y="4" width="20" height="16" rx="2" />
+</svg> #6b21a8</span><span style="color:#0369a1"><svg role="img" data-icon-pack="lucide" style="width:1em;height:1em" class="lucide lucide-mail icon icon-mail"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+  <rect x="2" y="4" width="20" height="16" rx="2" />
+</svg> #0369a1</span><span style="color:#b91c1c"><svg role="img" data-icon-pack="lucide" style="width:1em;height:1em" class="lucide lucide-mail icon icon-mail"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+  <rect x="2" y="4" width="20" height="16" rx="2" />
+</svg> #b91c1c</span><span style="color:#15803d"><svg role="img" data-icon-pack="lucide" style="width:1em;height:1em" class="lucide lucide-mail icon icon-mail"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+>
+  <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+  <rect x="2" y="4" width="20" height="16" rx="2" />
+</svg> #15803d</span>
+    <div class="card"><code>currentColor inherits text color</code></div>
+  </div></section>
+  <section><div class="row"><div class="card"><span><svg role="img" data-icon-pack="lucide" style="width:1.5em;height:1.5em" class="lucide lucide-arrow-down icon icon-arrow-down has-text-link"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="2"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+><title>Download</title>
+  <path d="M12 5v14" />
+  <path d="m19 12-7 7-7-7" />
+</svg></span>
+    <code>{% icon_ref download size:1.5em class:"has-text-link" title:"Download" %}</code>
+  </div></div></section>
+  <script>document.body.dataset.step=new URLSearchParams(location.search).get("step")||"0"</script>
+</body>
+</html>

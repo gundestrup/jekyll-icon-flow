@@ -1,0 +1,23 @@
+# Vendored pack provenance — maintained by `rake icons:sync`.
+# Edit icons only via that task so this file stays truthful.
+---
+pack: simple
+upstream_repo: simple-icons/simple-icons
+upstream_url: https://simpleicons.org
+license: CC0-1.0
+version: 16.37.0
+vendored: '2026-11-08'
+icons:
+  bluesky: 49752973164fbbf4464fbb4776f011c1eff207e5d7ad9254e031af025814eb75
+  discord: 1d364b72c9eaf1fe37d17ca88cd8fb541308dc0f3b09e2ab3b824f380b3493d5
+  facebook: b06d18d844ed621b89faffb1a33440cc0ec4f1ffea9f36191f50db19a47c59a6
+  github: 3bf8cceead820aec50d4ee825a3fd02c5a1cd6665cc9cf4cbf3d9c8861a204bb
+  instagram: f53af2d1fc5292ba1433b5c1faf50005ce6a997fa302d1816989929f379a59dc
+  mastodon: b27197d1e47e19f31a80bf5d08b3dc9a8d073083436215f672e8e1016178cbe4
+  medium: 411fbe8f2b7d631db8ac0a18b0e248639413fb8c263a71ed8bc9934049b6a7d1
+  rss: b31e1d6c3147795d2aa186e7515b624bb2b8046b30fce1063f111b36c99b9ef8
+  spotify: b9ec9bec7769c35643981586d6ea0d675aaf3871b32f8a291bcac7a87fff0bc1
+  telegram: 147fd8f8923e7e5f463fe98c0eb9913bead6b2ae59935728cda141002ec8a7c9
+  tiktok: 6f54ac8d325faacea8935bdc44cbed60206a6b408641799e5fea1cba7c1a0af7
+  x: 693e68863eceb8dc9f72e2acd386ab9c20a10858dab2c076212f7084cb7a32fe
+  youtube: 5038808acbbc4e6edda16cbeb1cc6dec80e4e4ee4e227e039c41229fa222aa8c
