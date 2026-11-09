@@ -196,6 +196,26 @@ Regenerate demo captures with `bundle exec rake docs:demo`; maintainers
 need Chrome, ffmpeg with `libsvtav1`, and `img2webp`. These host tools are
 not required by the gem or by normal Jekyll builds.
 
+## VS Code extension
+
+[jekyll-imgflow-vscode](https://github.com/gundestrup/jekyll-imgflow-vscode)
+autocompletes `{% icon %}`, `{% icon_<pack> %}`, `{% <pack>_icon %}` and
+`{% icon_ref %}` in VS Code / VSCodium — tag names, icon names per pack,
+named `size:`/`class:`/`title:` parameters, and registry keys:
+
+<!-- markdownlint-disable MD033 -->
+<picture>
+  <source
+    srcset="https://raw.githubusercontent.com/gundestrup/jekyll-imgflow-vscode/main/docs/assets/icon-flow.avif"
+    type="image/avif">
+  <source
+    srcset="https://raw.githubusercontent.com/gundestrup/jekyll-imgflow-vscode/main/docs/assets/icon-flow.webp"
+    type="image/webp">
+  <img src="https://raw.githubusercontent.com/gundestrup/jekyll-imgflow-vscode/main/docs/assets/icon-flow.png"
+       alt="jekyll-imgflow-vscode: icon tag, icon name and parameter autocomplete">
+</picture>
+<!-- markdownlint-enable MD033 -->
+
 ## Development and release checks
 
 Run `bundle exec rake ci` for RuboCop, dependency audit, local Semgrep rules,
