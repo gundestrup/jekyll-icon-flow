@@ -10,7 +10,9 @@ Gem::Specification.new do |spec|
   spec.summary = "Pack-agnostic inline SVG icon tags for Jekyll"
   spec.description = "A Jekyll plugin providing {% icon %} and per-pack {% icon_<pack> %} " \
                      "Liquid tags. Each icon pack is an adapter that resolves names to SVG " \
-                     "sources and normalizes output — same styling contract across packs."
+                     "sources and normalizes output — same styling contract across packs. " \
+                     "A companion VS Code extension (jekyll-imgflow-vscode) " \
+                     "provides tag autocomplete; see the README for animated demos."
   spec.homepage = "https://github.com/gundestrup/jekyll-icon-flow"
   spec.license = "AGPL-3.0-or-later"
   spec.metadata = {
