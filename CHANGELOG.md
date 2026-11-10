@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-10
+
+### Changed
+
+- Gemspec `description` now renders as RDoc on rubygems.org — the heredoc
+  opens with an `==`-level heading at column 0 so the gem page shows
+  headings and bullet lists instead of one plain paragraph — and mentions
+  the jekyll-imgflow-vscode VS Code companion extension for tag
+  autocomplete.
+- Vendored lucide `PACK.yml` bumped to upstream 1.71.0 — no icon byte
+  changes, provenance-only update required by the strict pre-release
+  freshness gate.
+- RuboCop `Metrics/BlockLength` now excludes `*.gemspec` — the longer
+  RDoc description heredoc pushed the spec block over the 25-line max
+  (matches the sibling repos' config).
+
 ## [0.2.0] - 2026-11-08
 
 ### Added

@@ -26,6 +26,7 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   Exclude:
+    - "*.gemspec"
     - test/**/*
 
 Metrics/ClassLength:

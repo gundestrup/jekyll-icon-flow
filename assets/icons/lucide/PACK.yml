@@ -5,8 +5,8 @@ pack: lucide
 upstream_repo: lucide-icons/lucide
 upstream_url: https://lucide.dev
 license: ISC
-version: 1.70.0
-vendored: '2026-11-08'
+version: 1.71.0
+vendored: '2026-11-10'
 aliases:
   home: house
   triangle-alert: triangle-exclamation-point
