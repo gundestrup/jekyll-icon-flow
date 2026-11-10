@@ -8,11 +8,23 @@ Gem::Specification.new do |spec|
   spec.authors = ["Svend Gundestrup"]
   spec.email = ["svend@gundestrup.dk"]
   spec.summary = "Pack-agnostic inline SVG icon tags for Jekyll"
-  spec.description = "A Jekyll plugin providing {% icon %} and per-pack {% icon_<pack> %} " \
-                     "Liquid tags. Each icon pack is an adapter that resolves names to SVG " \
-                     "sources and normalizes output — same styling contract across packs. " \
-                     "A companion VS Code extension (jekyll-imgflow-vscode) " \
-                     "provides tag autocomplete; see the README for animated demos."
+  # NOTE: rubygems.org renders the description through RDoc::Markup only
+  # when it starts with an == heading at column 0 — keep the heredoc
+  # content flush-left or the page renders as one plain <p>.
+  spec.description = <<~DESC
+    == Pack-agnostic inline SVG icons for Jekyll
+
+    Provides per-pack icon tags (icon_lucide, icon_simple, icon_custom) and
+    icon_ref registry lookups. Each pack adapter resolves names to SVG
+    sources with the same styling contract: size:, class:, title:.
+
+    * Bundled lucide + simple-icons packs, plus custom_dir packs
+    * Named em-relative sizes that scale with surrounding text
+    * icon_ref: name intent once in the registry, swap packs globally
+
+    A companion VS Code extension (jekyll-imgflow-vscode) provides tag
+    autocomplete: https://github.com/gundestrup/jekyll-imgflow-vscode
+  DESC
   spec.homepage = "https://github.com/gundestrup/jekyll-icon-flow"
   spec.license = "AGPL-3.0-or-later"
   spec.metadata = {
