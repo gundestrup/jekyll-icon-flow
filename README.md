@@ -1,6 +1,6 @@
-<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD013 MD033 MD041 -->
 <a href="https://gundestrup.github.io/flow/"><img align="right" src="https://gundestrup.github.io/flow/assets/badges/part-of-flow.svg" alt="Part of Flow software" height="40"></a>
-<!-- markdownlint-enable MD033 -->
+<!-- markdownlint-enable MD013 MD033 MD041 -->
 
 # jekyll-icon-flow
 
