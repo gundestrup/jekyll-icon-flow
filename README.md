@@ -1,5 +1,5 @@
 <!-- markdownlint-disable MD013 MD033 -->
-# jekyll-icon-flow <a href="https://gundestrup.github.io/flow/"><img align="right" src="https://gundestrup.github.io/flow/assets/badges/part-of-flow.svg" alt="Part of Flow software" height="40"></a>
+# jekyll-icon-flow <a href="https://gundestrup.github.io/flow/"><img align="right" src="https://gundestrup.github.io/flow/assets/badges/part-of-flow.svg?v=2" alt="Part of Flow software" height="40"></a>
 <!-- markdownlint-enable MD013 MD033 -->
 
 [![Status: Active](https://img.shields.io/badge/status-active-success)](https://github.com/gundestrup/jekyll-icon-flow)
