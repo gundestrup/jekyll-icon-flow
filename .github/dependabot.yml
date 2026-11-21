@@ -22,4 +22,3 @@ updates:
       bundler:
         patterns:
           - "*"
-  - package-ecosystem: bundler
