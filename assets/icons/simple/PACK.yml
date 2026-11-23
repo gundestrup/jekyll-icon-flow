@@ -5,8 +5,8 @@ pack: simple
 upstream_repo: simple-icons/simple-icons
 upstream_url: https://simpleicons.org
 license: CC0-1.0
-version: 16.38.0
-vendored: '2026-11-16'
+version: 16.38.1
+vendored: '2026-11-23'
 icons:
   bluesky: 49752973164fbbf4464fbb4776f011c1eff207e5d7ad9254e031af025814eb75
   discord: 1d364b72c9eaf1fe37d17ca88cd8fb541308dc0f3b09e2ab3b824f380b3493d5
